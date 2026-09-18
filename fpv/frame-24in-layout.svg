@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2260 1420" width="2260" height="1420" font-family="DejaVu Sans, Arial, sans-serif">
-<rect width="2260" height="1420" fill="#ffffff"/>
-<g stroke-linecap="round" stroke-linejoin="round">
-<text x="60" y="70" font-size="34" font-weight="bold" fill="#1a1a1a">A — Компонування, вид зверху (масштаб 1:2.2)</text>
-<text x="60" y="108" font-size="22" fill="#8a8a8a">Квадр X, база 1000 мм, гвинти 24" (Ø610), промінь 30×30×2 мм</text>
+<rect width="2260" height="1420" fill="#ffffff"/><g stroke-linecap="round" stroke-linejoin="round">
+<text x="60" y="70" font-size="34" font-weight="bold" fill="#1a1a1a">A — Компонування, вид зверху (1:2.2)</text>
+<text x="60" y="108" font-size="22" fill="#8a8a8a">База 1000 мм · гвинти 24" (Ø610) · промінь 30×30×2 · Starlink Mini повернутий на 45°</text>
 <circle cx="973.6" cy="346.4" r="305.0" fill="none" stroke="#8a8a8a" stroke-width="2" stroke-dasharray="10 8"/>
 <circle cx="266.4" cy="346.4" r="305.0" fill="none" stroke="#8a8a8a" stroke-width="2" stroke-dasharray="10 8"/>
 <circle cx="266.4" cy="1053.6" r="305.0" fill="none" stroke="#8a8a8a" stroke-width="2" stroke-dasharray="10 8"/>
@@ -15,90 +14,99 @@
 <circle cx="513.9" cy="806.1" r="26" fill="none" stroke="#0b6fb8" stroke-width="4"/>
 <line x1="669.5" y1="749.5" x2="973.6" y2="1053.6" stroke="#1a1a1a" stroke-width="30.0" opacity="0.85"/>
 <circle cx="726.1" cy="806.1" r="26" fill="none" stroke="#0b6fb8" stroke-width="4"/>
-<rect x="515.0" y="600.0" width="210.0" height="200.0" rx="12" fill="#ffffff" fill-opacity="0.92" stroke="#1a1a1a" stroke-width="4"/>
-<circle cx="973.6" cy="346.4" r="31" fill="#ffffff" stroke="#1a1a1a" stroke-width="4"/>
-<circle cx="973.6" cy="346.4" r="7" fill="#1a1a1a"/>
-<circle cx="266.4" cy="346.4" r="31" fill="#ffffff" stroke="#1a1a1a" stroke-width="4"/>
-<circle cx="266.4" cy="346.4" r="7" fill="#1a1a1a"/>
-<circle cx="266.4" cy="1053.6" r="31" fill="#ffffff" stroke="#1a1a1a" stroke-width="4"/>
-<circle cx="266.4" cy="1053.6" r="7" fill="#1a1a1a"/>
-<circle cx="973.6" cy="1053.6" r="31" fill="#ffffff" stroke="#1a1a1a" stroke-width="4"/>
-<circle cx="973.6" cy="1053.6" r="7" fill="#1a1a1a"/>
+<g transform="rotate(45 620.0 700.0)"><rect x="470.8" y="570.5" width="298.5" height="259.0" rx="16" fill="#0e8a4f" fill-opacity="0.12" stroke="#0e8a4f" stroke-width="4" stroke-dasharray="16 9"/></g>
+<rect x="515.0" y="600.0" width="210.0" height="200.0" rx="12" fill="#ffffff" fill-opacity="0.9" stroke="#1a1a1a" stroke-width="4"/>
+<circle cx="973.6" cy="346.4" r="31" fill="#ffffff" stroke="#1a1a1a" stroke-width="4"/><circle cx="973.6" cy="346.4" r="7" fill="#1a1a1a"/>
+<circle cx="266.4" cy="346.4" r="31" fill="#ffffff" stroke="#1a1a1a" stroke-width="4"/><circle cx="266.4" cy="346.4" r="7" fill="#1a1a1a"/>
+<circle cx="266.4" cy="1053.6" r="31" fill="#ffffff" stroke="#1a1a1a" stroke-width="4"/><circle cx="266.4" cy="1053.6" r="7" fill="#1a1a1a"/>
+<circle cx="973.6" cy="1053.6" r="31" fill="#ffffff" stroke="#1a1a1a" stroke-width="4"/><circle cx="973.6" cy="1053.6" r="7" fill="#1a1a1a"/>
 <text x="965" y="408" font-size="26" fill="#8a8a8a">CW</text>
 <text x="257" y="408" font-size="26" fill="#8a8a8a">CCW</text>
 <text x="257" y="1116" font-size="26" fill="#8a8a8a">CW</text>
 <text x="965" y="1116" font-size="26" fill="#8a8a8a">CCW</text>
-<line x1="266.4" y1="346.4" x2="973.6" y2="1053.6" stroke="#c02020" stroke-width="2.5" stroke-dasharray="14 7"/>
-<text x="740" y="660" font-size="30" font-weight="bold" fill="#c02020" transform="rotate(45 740 660)">база 1000</text>
+<circle cx="817.6" cy="700.0" r="9" fill="#0e8a4f"/>
+<line x1="817.6" y1="700.0" x2="735.7" y2="535.5" stroke="#0e8a4f" stroke-width="3" stroke-dasharray="9 6"/>
+<text x="834" y="684" font-size="26" font-weight="bold" fill="#0e8a4f">запас 81 мм</text>
+<text x="650" y="950" font-size="25" font-weight="bold" fill="#0e8a4f">Starlink Mini 298.5×259</text>
+<text x="650" y="982" font-size="22" fill="#0e8a4f">кути — по осях X/Y, НЕ на променях</text>
 <line x1="266.4" y1="-28.6" x2="973.6" y2="-28.6" stroke="#c02020" stroke-width="2.5"/>
 <line x1="266.4" y1="-42.6" x2="266.4" y2="-14.6" stroke="#c02020" stroke-width="2.5"/>
 <line x1="973.6" y1="-42.6" x2="973.6" y2="-14.6" stroke="#c02020" stroke-width="2.5"/>
 <text x="620" y="-47" font-size="30" font-weight="bold" fill="#c02020" text-anchor="middle">707 (мотор–мотор)</text>
 <line x1="571.4" y1="346.4" x2="668.6" y2="346.4" stroke="#c02020" stroke-width="3"/>
 <text x="620" y="330" font-size="26" font-weight="bold" fill="#c02020" text-anchor="middle">зазор 97</text>
-<line x1="620.0" y1="700.0" x2="266.4" y2="1053.6" stroke="#c02020" stroke-width="2" stroke-dasharray="8 6"/>
-<text x="320" y="930" font-size="26" fill="#c02020">R500</text>
+<line x1="266.4" y1="346.4" x2="973.6" y2="1053.6" stroke="#c02020" stroke-width="2.5" stroke-dasharray="14 7"/>
+<text x="290" y="485" font-size="30" font-weight="bold" fill="#c02020" transform="rotate(45 290 485)">база 1000</text>
 <text x="16" y="1409" font-size="26" fill="#8a8a8a">Ø610 (24")</text>
-<text x="525" y="708" font-size="26" fill="#1a1a1a">210×200</text>
-<text x="525" y="740" font-size="22" fill="#8a8a8a">карбон 2 мм ×2</text>
 <text x="1420" y="70" font-size="34" font-weight="bold" fill="#1a1a1a">B — Центральна пластина (1:0.73)</text>
-<text x="1420" y="108" font-size="22" fill="#8a8a8a">Карбон 2 мм, 2 шт. Розніс по Z — 35 мм</text>
-<rect x="1165.0" y="130.0" width="630.0" height="600.0" rx="42" fill="none" stroke="#1a1a1a" stroke-width="4"/>
-<line x1="1480.0" y1="430.0" x2="1798.2" y2="111.8" stroke="#0b6fb8" stroke-width="1.5" stroke-dasharray="10 7"/>
-<circle cx="1729.3" cy="127.7" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1814.1" cy="42.9" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1782.3" cy="180.7" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1867.1" cy="95.9" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<line x1="1480.0" y1="430.0" x2="1161.8" y2="111.8" stroke="#0b6fb8" stroke-width="1.5" stroke-dasharray="10 7"/>
-<circle cx="1177.7" cy="180.7" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1092.9" cy="95.9" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1230.7" cy="127.7" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1145.9" cy="42.9" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<line x1="1480.0" y1="430.0" x2="1161.8" y2="748.2" stroke="#0b6fb8" stroke-width="1.5" stroke-dasharray="10 7"/>
-<circle cx="1230.7" cy="732.3" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1145.9" cy="817.1" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1177.7" cy="679.3" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1092.9" cy="764.1" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<line x1="1480.0" y1="430.0" x2="1798.2" y2="748.2" stroke="#0b6fb8" stroke-width="1.5" stroke-dasharray="10 7"/>
-<circle cx="1782.3" cy="679.3" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1867.1" cy="764.1" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1729.3" cy="732.3" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1814.1" cy="817.1" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1434.2" cy="384.2" r="4.8" fill="none" stroke="#0b6fb8" stroke-width="2.5"/>
-<circle cx="1434.2" cy="475.8" r="4.8" fill="none" stroke="#0b6fb8" stroke-width="2.5"/>
-<circle cx="1525.8" cy="384.2" r="4.8" fill="none" stroke="#0b6fb8" stroke-width="2.5"/>
-<circle cx="1525.8" cy="475.8" r="4.8" fill="none" stroke="#0b6fb8" stroke-width="2.5"/>
-<rect x="1434.2" y="384.2" width="91.5" height="91.5" fill="none" stroke="#0b6fb8" stroke-width="1.5" stroke-dasharray="8 6"/>
-<text x="1480" y="373" font-size="24" fill="#0b6fb8" text-anchor="middle">FC 30.5×30.5 M3</text>
-<circle cx="1216.0" cy="181.0" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1216.0" cy="679.0" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1744.0" cy="181.0" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<circle cx="1744.0" cy="679.0" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
-<ellipse cx="1294.0" cy="430.0" rx="51.0" ry="126.0" fill="none" stroke="#8a8a8a" stroke-width="2.5" stroke-dasharray="10 7"/>
-<ellipse cx="1666.0" cy="430.0" rx="51.0" ry="126.0" fill="none" stroke="#8a8a8a" stroke-width="2.5" stroke-dasharray="10 7"/>
-<line x1="1165.0" y1="785.0" x2="1795.0" y2="785.0" stroke="#c02020" stroke-width="2.5"/>
-<line x1="1165.0" y1="772.0" x2="1165.0" y2="798.0" stroke="#c02020" stroke-width="2.5"/>
-<line x1="1795.0" y1="772.0" x2="1795.0" y2="798.0" stroke="#c02020" stroke-width="2.5"/>
-<text x="1480" y="823" font-size="28" font-weight="bold" fill="#c02020" text-anchor="middle">210</text>
-<line x1="1850.0" y1="130.0" x2="1850.0" y2="730.0" stroke="#c02020" stroke-width="2.5"/>
-<line x1="1837.0" y1="130.0" x2="1863.0" y2="130.0" stroke="#c02020" stroke-width="2.5"/>
-<line x1="1837.0" y1="730.0" x2="1863.0" y2="730.0" stroke="#c02020" stroke-width="2.5"/>
-<text x="1884" y="439" font-size="28" font-weight="bold" fill="#c02020">200</text>
-<text x="1165" y="867" font-size="23" fill="#c02020">M4 ×16 (Ø4.2) — затискачі  ·  Ø4.2 ×4 — стійки  ·  M3 ×4 — FC</text>
-<text x="1420" y="905" font-size="34" font-weight="bold" fill="#1a1a1a">C — Шасі, вид спереду</text>
-<line x1="1414.9" y1="1035.0" x2="1545.1" y2="1035.0" stroke="#1a1a1a" stroke-width="7"/>
-<line x1="1356.0" y1="1035.0" x2="1286.3" y2="1207.5" stroke="#1a1a1a" stroke-width="9"/>
-<text x="1334" y="1130" font-size="24" fill="#c02020" text-anchor="end">22°</text>
-<line x1="1604.0" y1="1035.0" x2="1673.7" y2="1207.5" stroke="#1a1a1a" stroke-width="9"/>
-<text x="1626" y="1130" font-size="24" fill="#c02020" text-anchor="start">22°</text>
-<line x1="1256.3" y1="1207.5" x2="1703.7" y2="1207.5" stroke="#1a1a1a" stroke-width="11"/>
-<rect x="1426.7" y="1053.0" width="106.6" height="43.4" rx="6" fill="none" stroke="#0b6fb8" stroke-width="4"/>
-<text x="1480" y="1093" font-size="22" fill="#0b6fb8" text-anchor="middle">12S4P · 3.97 кг</text>
-<line x1="1730.0" y1="1035.0" x2="1730.0" y2="1207.5" stroke="#c02020" stroke-width="2.5"/>
-<line x1="1717.0" y1="1035.0" x2="1743.0" y2="1035.0" stroke="#c02020" stroke-width="2.5"/>
-<line x1="1717.0" y1="1207.5" x2="1743.0" y2="1207.5" stroke="#c02020" stroke-width="2.5"/>
-<text x="1752" y="1129" font-size="27" font-weight="bold" fill="#c02020">300</text>
-<line x1="1286.3" y1="1255.5" x2="1673.7" y2="1255.5" stroke="#c02020" stroke-width="2.5"/>
-<text x="1480" y="1287" font-size="27" font-weight="bold" fill="#c02020" text-anchor="middle">опорна база 624</text>
-<text x="1150" y="1335" font-size="23" fill="#8a8a8a">Труба Ø16×14 мм · просвіт під батареєю ≈ 200 мм</text>
+<text x="1420" y="108" font-size="22" fill="#8a8a8a">Карбон 2 мм ×2, розніс 35 мм</text>
+<rect x="1165.0" y="100.0" width="630.0" height="600.0" rx="42" fill="none" stroke="#1a1a1a" stroke-width="4"/>
+<line x1="1480.0" y1="400.0" x2="1798.2" y2="81.8" stroke="#0b6fb8" stroke-width="1.5" stroke-dasharray="10 7"/>
+<circle cx="1729.3" cy="97.7" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1814.1" cy="12.9" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1782.3" cy="150.7" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1867.1" cy="65.9" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<line x1="1480.0" y1="400.0" x2="1161.8" y2="81.8" stroke="#0b6fb8" stroke-width="1.5" stroke-dasharray="10 7"/>
+<circle cx="1177.7" cy="150.7" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1092.9" cy="65.9" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1230.7" cy="97.7" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1145.9" cy="12.9" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<line x1="1480.0" y1="400.0" x2="1161.8" y2="718.2" stroke="#0b6fb8" stroke-width="1.5" stroke-dasharray="10 7"/>
+<circle cx="1230.7" cy="702.3" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1145.9" cy="787.1" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1177.7" cy="649.3" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1092.9" cy="734.1" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<line x1="1480.0" y1="400.0" x2="1798.2" y2="718.2" stroke="#0b6fb8" stroke-width="1.5" stroke-dasharray="10 7"/>
+<circle cx="1782.3" cy="649.3" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1867.1" cy="734.1" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1729.3" cy="702.3" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1814.1" cy="787.1" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1434.2" cy="354.2" r="4.8" fill="none" stroke="#0b6fb8" stroke-width="2.5"/>
+<circle cx="1434.2" cy="445.8" r="4.8" fill="none" stroke="#0b6fb8" stroke-width="2.5"/>
+<circle cx="1525.8" cy="354.2" r="4.8" fill="none" stroke="#0b6fb8" stroke-width="2.5"/>
+<circle cx="1525.8" cy="445.8" r="4.8" fill="none" stroke="#0b6fb8" stroke-width="2.5"/>
+<rect x="1434.2" y="354.2" width="91.5" height="91.5" fill="none" stroke="#0b6fb8" stroke-width="1.5" stroke-dasharray="8 6"/>
+<text x="1480" y="344" font-size="23" fill="#0b6fb8" text-anchor="middle">FC 30.5×30.5 M3</text>
+<circle cx="1216.0" cy="151.0" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1216.0" cy="649.0" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1744.0" cy="151.0" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1744.0" cy="649.0" r="6.3" fill="none" stroke="#c02020" stroke-width="2.5"/>
+<circle cx="1270.0" cy="205.0" r="6.3" fill="none" stroke="#0e8a4f" stroke-width="3.5"/>
+<circle cx="1270.0" cy="205.0" r="16.5" fill="none" stroke="#0e8a4f" stroke-width="1.5" stroke-dasharray="6 5"/>
+<circle cx="1270.0" cy="595.0" r="6.3" fill="none" stroke="#0e8a4f" stroke-width="3.5"/>
+<circle cx="1270.0" cy="595.0" r="16.5" fill="none" stroke="#0e8a4f" stroke-width="1.5" stroke-dasharray="6 5"/>
+<circle cx="1690.0" cy="205.0" r="6.3" fill="none" stroke="#0e8a4f" stroke-width="3.5"/>
+<circle cx="1690.0" cy="205.0" r="16.5" fill="none" stroke="#0e8a4f" stroke-width="1.5" stroke-dasharray="6 5"/>
+<circle cx="1690.0" cy="595.0" r="6.3" fill="none" stroke="#0e8a4f" stroke-width="3.5"/>
+<circle cx="1690.0" cy="595.0" r="16.5" fill="none" stroke="#0e8a4f" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="1480" y="742" font-size="24" font-weight="bold" fill="#0e8a4f" text-anchor="middle">● M4 ×4 (±70, ±65) — кронштейн Starlink</text>
+<line x1="1165.0" y1="788.0" x2="1795.0" y2="788.0" stroke="#c02020" stroke-width="2.5"/>
+<line x1="1165.0" y1="775.0" x2="1165.0" y2="801.0" stroke="#c02020" stroke-width="2.5"/>
+<line x1="1795.0" y1="775.0" x2="1795.0" y2="801.0" stroke="#c02020" stroke-width="2.5"/>
+<text x="1480" y="824" font-size="28" font-weight="bold" fill="#c02020" text-anchor="middle">210</text>
+<line x1="1850.0" y1="100.0" x2="1850.0" y2="700.0" stroke="#c02020" stroke-width="2.5"/>
+<line x1="1837.0" y1="100.0" x2="1863.0" y2="100.0" stroke="#c02020" stroke-width="2.5"/>
+<line x1="1837.0" y1="700.0" x2="1863.0" y2="700.0" stroke="#c02020" stroke-width="2.5"/>
+<text x="1880" y="409" font-size="28" font-weight="bold" fill="#c02020">200</text>
+<text x="1420" y="880" font-size="34" font-weight="bold" fill="#1a1a1a">C — Вид спереду, вертикальна компоновка</text>
+<line x1="1414.9" y1="1010.0" x2="1545.1" y2="1010.0" stroke="#1a1a1a" stroke-width="7"/>
+<rect x="1422.3" y="967.4" width="115.3" height="24" rx="4" fill="#0e8a4f" fill-opacity="0.18" stroke="#0e8a4f" stroke-width="3.5"/>
+<text x="1608" y="970" font-size="21" fill="#0e8a4f">Starlink 38.5 мм + демпфери 10</text>
+<line x1="1337.4" y1="952.0" x2="1387.0" y2="952.0" stroke="#8a8a8a" stroke-width="5"/>
+<line x1="1573.0" y1="952.0" x2="1622.6" y2="952.0" stroke="#8a8a8a" stroke-width="5"/>
+<text x="1336" y="942" font-size="21" fill="#8a8a8a">площина гвинтів</text>
+<line x1="1575.0" y1="952.0" x2="1575.0" y2="1010.0" stroke="#c02020" stroke-width="2.5"/>
+<line x1="1563.0" y1="952.0" x2="1587.0" y2="952.0" stroke="#c02020" stroke-width="2.5"/>
+<line x1="1563.0" y1="1010.0" x2="1587.0" y2="1010.0" stroke="#c02020" stroke-width="2.5"/>
+<text x="1592" y="982" font-size="22" font-weight="bold" fill="#c02020">58 (запас 9.5)</text>
+<line x1="1356.0" y1="1010.0" x2="1286.3" y2="1182.5" stroke="#1a1a1a" stroke-width="9"/>
+<line x1="1604.0" y1="1010.0" x2="1673.7" y2="1182.5" stroke="#1a1a1a" stroke-width="9"/>
+<line x1="1256.3" y1="1182.5" x2="1703.7" y2="1182.5" stroke="#1a1a1a" stroke-width="11"/>
+<rect x="1426.7" y="1028.0" width="106.6" height="43.4" rx="6" fill="none" stroke="#0b6fb8" stroke-width="4"/>
+<text x="1480" y="1068" font-size="21" fill="#0b6fb8" text-anchor="middle">12S4P · 3.97 кг</text>
+<line x1="1730.0" y1="1010.0" x2="1730.0" y2="1182.5" stroke="#c02020" stroke-width="2.5"/>
+<line x1="1718.0" y1="1010.0" x2="1742.0" y2="1010.0" stroke="#c02020" stroke-width="2.5"/>
+<line x1="1718.0" y1="1182.5" x2="1742.0" y2="1182.5" stroke="#c02020" stroke-width="2.5"/>
+<text x="1750" y="1104" font-size="26" font-weight="bold" fill="#c02020">300</text>
+<text x="1480" y="1224" font-size="26" font-weight="bold" fill="#c02020" text-anchor="middle">опорна база 624</text>
 </g></svg>
