@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2500 1780" width="2500" height="1780" font-family="DejaVu Sans, Arial, sans-serif">
+<rect width="2500" height="1780" fill="#ffffff"/><g stroke-linecap="round" stroke-linejoin="round">
+<text x="50" y="56" font-size="35" font-weight="bold" fill="#1a1a1a">Блок-схема живлення і даних</text>
+<text x="50" y="92" font-size="20" fill="#8a8a8a">AUW 13.3 кг · висіння 1710 Вт / 38.5 А (0.99C) · повний газ 171 А (4.4C, ліміт комірки 175 А)</text>
+<defs>
+<marker id="ac2410c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+<marker id="a0b6fb8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0b6fb8"/></marker>
+<marker id="a0e8a4f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0e8a4f"/></marker>
+<marker id="a6b3fa0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6b3fa0"/></marker>
+<marker id="a1a1a1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/></marker>
+</defs>
+<text x="80" y="150" font-size="27" font-weight="bold" fill="#c2410c">ЖИВЛЕННЯ</text>
+<rect x="100" y="175" width="330" height="104" rx="9" fill="#c2410c" fill-opacity="0.14" stroke="#c2410c" stroke-width="3"/>
+<text x="265.0" y="203" font-size="21" font-weight="bold" fill="#c2410c" text-anchor="middle">Батарея 12S1P</text>
+<text x="265.0" y="229" font-size="17" fill="#1a1a1a" text-anchor="middle">Westinghouse INP1187187 ×12</text>
+<text x="265.0" y="251" font-size="17" fill="#1a1a1a" text-anchor="middle">36.0–50.4 В · 39 Ач · 1732 Вт·год</text>
+<line x1="265" y1="279" x2="265" y2="325" stroke="#c2410c" stroke-width="6" marker-end="url(#ac2410c)"/>
+<rect x="100" y="325" width="330" height="58" rx="9" fill="#c2410c" fill-opacity="0.06" stroke="#c2410c" stroke-width="3"/>
+<text x="265.0" y="361.0" font-size="19" font-weight="bold" fill="#c2410c" text-anchor="middle">Вимикач + AS150 / XT150</text>
+<line x1="265" y1="383" x2="265" y2="425" stroke="#c2410c" stroke-width="6" marker-end="url(#ac2410c)"/>
+<rect x="100" y="425" width="330" height="74" rx="9" fill="#c2410c" fill-opacity="0.06" stroke="#c2410c" stroke-width="3"/>
+<text x="265.0" y="453" font-size="20" font-weight="bold" fill="#c2410c" text-anchor="middle">Mauch HS-200-HV</text>
+<text x="265.0" y="479" font-size="17" fill="#1a1a1a" text-anchor="middle">холл, 200 А, без шунта</text>
+<text x="450" y="470" font-size="16" fill="#c02020">PM02D (60 А) НЕ підходить</text>
+<line x1="265" y1="499" x2="265" y2="545" stroke="#c2410c" stroke-width="6" marker-end="url(#ac2410c)"/>
+<line x1="265" y1="545" x2="265" y2="1190" stroke="#c2410c" stroke-width="13"/>
+<text x="150" y="845" font-size="19" fill="#c2410c" font-weight="bold" transform="rotate(-90 150 845)">Силова шина 12S · 8 AWG</text>
+<line x1="265" y1="611.0" x2="470" y2="611.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<rect x="470" y="570" width="330" height="82" rx="9" fill="#c2410c" fill-opacity="0.06" stroke="#c2410c" stroke-width="3"/>
+<text x="635.0" y="598" font-size="20" font-weight="bold" fill="#c2410c" text-anchor="middle">4× ESC 80 A HV</text>
+<text x="635.0" y="624" font-size="17" fill="#1a1a1a" text-anchor="middle">12 AWG на промінь</text>
+<line x1="800" y1="611.0" x2="905" y2="611.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<text x="915" y="605.0" font-size="19" font-weight="bold" fill="#1a1a1a">4 мотори MN6012 KV170</text>
+<text x="915" y="629.0" font-size="16" fill="#8a8a8a">9.0 А / мотор у висінні, 42.8 А пік</text>
+<line x1="265" y1="741.0" x2="470" y2="741.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<rect x="470" y="700" width="330" height="82" rx="9" fill="#c2410c" fill-opacity="0.06" stroke="#c2410c" stroke-width="3"/>
+<text x="635.0" y="728" font-size="20" font-weight="bold" fill="#c2410c" text-anchor="middle">Buck 24 В / 150 Вт</text>
+<text x="635.0" y="754" font-size="17" fill="#1a1a1a" text-anchor="middle">16 AWG</text>
+<line x1="800" y1="741.0" x2="905" y2="741.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<text x="915" y="735.0" font-size="19" font-weight="bold" fill="#1a1a1a">Starlink Mini</text>
+<text x="915" y="759.0" font-size="16" fill="#8a8a8a">39 Вт середньо, 100 Вт пік</text>
+<line x1="265" y1="871.0" x2="470" y2="871.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<rect x="470" y="830" width="330" height="82" rx="9" fill="#c2410c" fill-opacity="0.06" stroke="#c2410c" stroke-width="3"/>
+<text x="635.0" y="858" font-size="20" font-weight="bold" fill="#c2410c" text-anchor="middle">Buck 12 В / 150 Вт</text>
+<text x="635.0" y="884" font-size="17" fill="#1a1a1a" text-anchor="middle">14 AWG</text>
+<line x1="800" y1="871.0" x2="905" y2="871.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<text x="915" y="865.0" font-size="19" font-weight="bold" fill="#1a1a1a">Ретранслятор RF</text>
+<text x="915" y="889.0" font-size="16" fill="#8a8a8a">42 Вт середньо, 150 Вт пік ×3–5</text>
+<line x1="265" y1="1001.0" x2="470" y2="1001.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<rect x="470" y="960" width="330" height="82" rx="9" fill="#c2410c" fill-opacity="0.06" stroke="#c2410c" stroke-width="3"/>
+<text x="635.0" y="988" font-size="20" font-weight="bold" fill="#c2410c" text-anchor="middle">Buck 12 В / 50 Вт</text>
+<text x="635.0" y="1014" font-size="17" fill="#1a1a1a" text-anchor="middle">18 AWG</text>
+<line x1="800" y1="1001.0" x2="905" y2="1001.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<text x="915" y="995.0" font-size="19" font-weight="bold" fill="#1a1a1a">SIYI ZR10</text>
+<text x="915" y="1019.0" font-size="16" fill="#8a8a8a">15 Вт — ОКРЕМА шина</text>
+<line x1="265" y1="1108.0" x2="470" y2="1108.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<rect x="470" y="1080" width="330" height="56" rx="9" fill="#c2410c" fill-opacity="0.06" stroke="#c2410c" stroke-width="3"/>
+<text x="635.0" y="1115.0" font-size="20" font-weight="bold" fill="#c2410c" text-anchor="middle">Mauch BEC 5.3 В</text>
+<line x1="800" y1="1108.0" x2="905" y2="1108.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<text x="915" y="1114.0" font-size="19" font-weight="bold" fill="#1a1a1a">Pixhawk POWER1</text>
+<line x1="265" y1="1188.0" x2="470" y2="1188.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<rect x="470" y="1160" width="330" height="56" rx="9" fill="#c2410c" fill-opacity="0.06" stroke="#c2410c" stroke-width="3"/>
+<text x="635.0" y="1195.0" font-size="20" font-weight="bold" fill="#c2410c" text-anchor="middle">Резервний BEC 5.3 В</text>
+<line x1="800" y1="1188.0" x2="905" y2="1188.0" stroke="#c2410c" stroke-width="5" marker-end="url(#ac2410c)"/>
+<text x="915" y="1194.0" font-size="19" font-weight="bold" fill="#1a1a1a">Pixhawk POWER2</text>
+<rect x="905" y="1245" width="480" height="128" rx="9" fill="#fff4ed" stroke="#c2410c" stroke-width="2"/>
+<text x="925" y="1275" font-size="18" font-weight="bold" fill="#c2410c">Конденсатори</text>
+<text x="925" y="1301" font-size="16" fill="#1a1a1a">• 220 мкФ / 63 В low-ESR біля КОЖНОГО ESC</text>
+<text x="925" y="1326" font-size="16" fill="#1a1a1a">• 2× 680 мкФ / 63 В банк на PDB</text>
+<text x="925" y="1351" font-size="16" fill="#1a1a1a">• фери́т на вході й виході кожного buck</text>
+<text x="1460" y="150" font-size="27" font-weight="bold" fill="#0b6fb8">ДАНІ</text>
+<rect x="1710" y="175" width="520" height="120" rx="9" fill="#0b6fb8" fill-opacity="0.13" stroke="#0b6fb8" stroke-width="3"/>
+<text x="1970.0" y="203" font-size="23" font-weight="bold" fill="#0b6fb8" text-anchor="middle">Pixhawk 6X + Raspberry Pi CM4</text>
+<text x="1970.0" y="229" font-size="17" fill="#1a1a1a" text-anchor="middle">Holybro RPi CM4 Baseboard</text>
+<text x="1970.0" y="251" font-size="17" fill="#1a1a1a" text-anchor="middle">FC ↔ CM4 з'єднані на платі, без зовнішнього дроту</text>
+<rect x="1460" y="345" width="320" height="64" rx="9" fill="#0b6fb8" fill-opacity="0.05" stroke="#0b6fb8" stroke-width="3"/>
+<text x="1620.0" y="384.0" font-size="19" font-weight="bold" fill="#0b6fb8" text-anchor="middle">GPS M9N / F9P</text>
+<line x1="1780" y1="377" x2="1960" y2="377" stroke="#0b6fb8" stroke-width="3.5" marker-end="url(#a0b6fb8)"/>
+<text x="1870.0" y="366.0" font-size="16" fill="#0b6fb8" text-anchor="middle" font-weight="bold">GPS1 + I2C компас</text>
+<rect x="1460" y="431" width="320" height="64" rx="9" fill="#0b6fb8" fill-opacity="0.05" stroke="#0b6fb8" stroke-width="3"/>
+<text x="1620.0" y="470.0" font-size="19" font-weight="bold" fill="#0b6fb8" text-anchor="middle">ELRS 2.4 ГГц RX</text>
+<line x1="1780" y1="463" x2="1960" y2="463" stroke="#0b6fb8" stroke-width="3.5" marker-end="url(#a0b6fb8)"/>
+<text x="1870.0" y="452.0" font-size="16" fill="#0b6fb8" text-anchor="middle" font-weight="bold">TELEM1 · CRSF</text>
+<rect x="1460" y="517" width="320" height="64" rx="9" fill="#0b6fb8" fill-opacity="0.05" stroke="#0b6fb8" stroke-width="3"/>
+<text x="1620.0" y="556.0" font-size="19" font-weight="bold" fill="#0b6fb8" text-anchor="middle">Телеметрія ESC</text>
+<line x1="1780" y1="549" x2="1960" y2="549" stroke="#0b6fb8" stroke-width="3.5" marker-end="url(#a0b6fb8)"/>
+<text x="1870.0" y="538.0" font-size="16" fill="#0b6fb8" text-anchor="middle" font-weight="bold">UART4 · bdshot</text>
+<rect x="1460" y="603" width="320" height="64" rx="9" fill="#0b6fb8" fill-opacity="0.05" stroke="#0b6fb8" stroke-width="3"/>
+<text x="1620.0" y="642.0" font-size="19" font-weight="bold" fill="#0b6fb8" text-anchor="middle">Телеметрія ретранслятора</text>
+<line x1="1780" y1="635" x2="1960" y2="635" stroke="#0b6fb8" stroke-width="3.5" marker-end="url(#a0b6fb8)"/>
+<text x="1870.0" y="624.0" font-size="16" fill="#0b6fb8" text-anchor="middle" font-weight="bold">TELEM3</text>
+<line x1="1960" y1="377" x2="1960" y2="635" stroke="#0b6fb8" stroke-width="3.5"/>
+<line x1="1960" y1="377" x2="1970" y2="377" stroke="#0b6fb8" stroke-width="3.5" marker-end="url(#a0b6fb8)"/>
+<line x1="1970" y1="295" x2="1970" y2="377" stroke="#0b6fb8" stroke-width="3.5"/>
+<rect x="2290" y="345" width="300" height="64" rx="9" fill="#0b6fb8" fill-opacity="0.05" stroke="#0b6fb8" stroke-width="3"/>
+<text x="2440.0" y="384.0" font-size="19" font-weight="bold" fill="#0b6fb8" text-anchor="middle">DJI O4 Air Unit</text>
+<line x1="2290" y1="377" x2="2250" y2="377" stroke="#0b6fb8" stroke-width="3.5" marker-end="url(#a0b6fb8)"/>
+<line x1="2250" y1="295" x2="2250" y2="377" stroke="#0b6fb8" stroke-width="3.5"/>
+<text x="2260" y="336" font-size="16" fill="#0b6fb8">UART</text>
+<rect x="1740" y="700" width="460" height="84" rx="9" fill="#0e8a4f" fill-opacity="0.13" stroke="#0e8a4f" stroke-width="3"/>
+<text x="1970.0" y="728" font-size="22" font-weight="bold" fill="#0e8a4f" text-anchor="middle">Комутатор Ethernet 4 порти</text>
+<text x="1970.0" y="754" font-size="17" fill="#1a1a1a" text-anchor="middle">~15 г · 1.5 Вт — вузол, якого не було в BOM</text>
+<line x1="1970" y1="295" x2="1970" y2="700" stroke="#0e8a4f" stroke-width="5" marker-end="url(#a0e8a4f)"/>
+<text x="2028.0" y="497.5" font-size="18" fill="#0e8a4f" text-anchor="middle" font-weight="bold">Ethernet</text>
+<rect x="1420" y="900" width="340" height="80" rx="9" fill="#0e8a4f" fill-opacity="0.06" stroke="#0e8a4f" stroke-width="3"/>
+<text x="1590.0" y="928" font-size="20" font-weight="bold" fill="#0e8a4f" text-anchor="middle">Starlink Mini</text>
+<text x="1590.0" y="954" font-size="17" fill="#1a1a1a" text-anchor="middle">Ku · інтернет-канал</text>
+<line x1="1590" y1="900" x2="1590" y2="790" stroke="#0e8a4f" stroke-width="4" marker-end="url(#a0e8a4f)"/>
+<rect x="1840" y="900" width="340" height="80" rx="9" fill="#0e8a4f" fill-opacity="0.06" stroke="#0e8a4f" stroke-width="3"/>
+<text x="2010.0" y="928" font-size="20" font-weight="bold" fill="#0e8a4f" text-anchor="middle">SIYI ZR10</text>
+<text x="2010.0" y="954" font-size="17" fill="#1a1a1a" text-anchor="middle">відео + керування</text>
+<line x1="2010" y1="900" x2="2010" y2="790" stroke="#0e8a4f" stroke-width="4" marker-end="url(#a0e8a4f)"/>
+<rect x="2260" y="900" width="340" height="80" rx="9" fill="#0e8a4f" fill-opacity="0.06" stroke="#0e8a4f" stroke-width="3"/>
+<text x="2430.0" y="928" font-size="20" font-weight="bold" fill="#0e8a4f" text-anchor="middle">Pixhawk 6X ETH</text>
+<text x="2430.0" y="954" font-size="17" fill="#1a1a1a" text-anchor="middle">MAVLink UDP</text>
+<line x1="2430" y1="900" x2="2430" y2="790" stroke="#0e8a4f" stroke-width="4" marker-end="url(#a0e8a4f)"/>
+<line x1="1590" y1="790" x2="2430" y2="790" stroke="#0e8a4f" stroke-width="4"/>
+<rect x="90" y="1420" width="1150" height="300" rx="12" fill="#f7f7f7" stroke="#6b3fa0" stroke-width="2"/>
+<text x="120" y="1458" font-size="24" font-weight="bold" fill="#6b3fa0">Радіочастотний план</text>
+<text x="122" y="1496" font-size="19" fill="#1a1a1a">GPS L1</text>
+<text x="390" y="1496" font-size="19" font-weight="bold" fill="#6b3fa0">1575 МГц</text>
+<text x="610" y="1496" font-size="17" fill="#8a8a8a">щогла 200 мм, окремо від buck-ів</text>
+<text x="122" y="1532" font-size="19" fill="#1a1a1a">Ягі payload</text>
+<text x="390" y="1532" font-size="19" font-weight="bold" fill="#6b3fa0">900 МГц</text>
+<text x="610" y="1532" font-size="17" fill="#8a8a8a">через нього ELRS перенесено з 868</text>
+<text x="122" y="1568" font-size="19" fill="#1a1a1a">ELRS керування</text>
+<text x="390" y="1568" font-size="19" font-weight="bold" fill="#6b3fa0">2.4 ГГц</text>
+<text x="610" y="1568" font-size="17" fill="#8a8a8a"></text>
+<text x="122" y="1604" font-size="19" fill="#1a1a1a">Рупор payload</text>
+<text x="390" y="1604" font-size="19" font-weight="bold" fill="#6b3fa0">3.3 ГГц</text>
+<text x="610" y="1604" font-size="17" fill="#8a8a8a"></text>
+<text x="122" y="1640" font-size="19" fill="#1a1a1a">DJI O4 відео</text>
+<text x="390" y="1640" font-size="19" font-weight="bold" fill="#6b3fa0">5.8 ГГц</text>
+<text x="610" y="1640" font-size="17" fill="#c02020">ПРИМУСОВО лише 5.8 — інакше б'є по ELRS 2.4</text>
+<text x="122" y="1676" font-size="19" fill="#1a1a1a">Starlink</text>
+<text x="390" y="1676" font-size="19" font-weight="bold" fill="#6b3fa0">10.7–14.5 ГГц</text>
+<text x="610" y="1676" font-size="17" fill="#8a8a8a"></text>
+<rect x="1290" y="1420" width="1150" height="300" rx="12" fill="#f4f8fb" stroke="#0b6fb8" stroke-width="2"/>
+<text x="1320" y="1458" font-size="24" font-weight="bold" fill="#0b6fb8">Два незалежні канали і failsafe</text>
+<text x="1322" y="1496" font-size="19" fill="#8a8a8a">Керування 1</text>
+<text x="1470" y="1496" font-size="19" font-weight="bold" fill="#0b6fb8">ELRS 2.4 ГГц</text>
+<text x="1790" y="1496" font-size="17" fill="#8a8a8a">пряма радіолінія, ~15–30 км, затримка ~10 мс</text>
+<text x="1322" y="1536" font-size="19" fill="#8a8a8a">Керування 2</text>
+<text x="1470" y="1536" font-size="19" font-weight="bold" fill="#0b6fb8">MAVLink через Starlink</text>
+<text x="1790" y="1536" font-size="17" fill="#8a8a8a">без обмеження дальності, затримка 50–150 мс</text>
+<text x="1322" y="1576" font-size="19" fill="#8a8a8a">Відео 1</text>
+<text x="1470" y="1576" font-size="19" font-weight="bold" fill="#0b6fb8">DJI O4 5.8 ГГц</text>
+<text x="1790" y="1576" font-size="17" fill="#8a8a8a">зліт і посадка, низька затримка</text>
+<text x="1322" y="1616" font-size="19" fill="#8a8a8a">Відео 2</text>
+<text x="1470" y="1616" font-size="19" font-weight="bold" fill="#0b6fb8">ZR10 → Starlink</text>
+<text x="1790" y="1616" font-size="17" fill="#8a8a8a">місія, без обмеження дальності</text>
+<text x="1322" y="1668" font-size="19" font-weight="bold" fill="#1a1a1a">Ієрархія: втрата ELRS → продовжувати по Starlink · втрата обох → RTL · втрата GPS → Loiter на оптиці</text>
+</g></svg>
