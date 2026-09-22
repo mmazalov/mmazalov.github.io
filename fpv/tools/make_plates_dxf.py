@@ -37,6 +37,12 @@ def slot(msp, cx, cy, L, W):
                         (*P(cx + a, cy + r), 0), (*P(cx - a, cy + r), 1)],
                        format="xyb", close=True, dxfattribs={"layer": "CUT_INNER"})
 
+def vslot(msp, cx, cy, L, W):
+    a, r = (L - W) / 2, W / 2
+    msp.add_lwpolyline([(*P(cx + r, cy - a), 0), (*P(cx + r, cy + a), 1),
+                        (*P(cx - r, cy + a), 0), (*P(cx - r, cy - a), 1)],
+                       format="xyb", close=True, dxfattribs={"layer": "CUT_INNER"})
+
 def rrect(msp, w, h, r):
     a, b = w / 2, h / 2
     msp.add_lwpolyline([(*P(-a + r, -b), 0), (*P(a - r, -b), B90), (*P(a, -b + r), 0), (*P(a, b - r), B90),
@@ -55,6 +61,8 @@ def build(layer, name):
     for x, y, d, _, _ in G.layer_holes(layer):
         msp.add_circle(P(x, y), d / 2, dxfattribs={"layer": "CUT_INNER"})
     for s in G.SLOTS: slot(msp, *s)
+    if layer == "B":
+        for cx, cy, L, W in G.BATT_SLOTS: vslot(msp, cx, cy, L, W)
     rrect(msp, *G.POCKET[layer])
     path = os.path.join(OUT_DIR, name)
     doc.saveas(path)
@@ -76,7 +84,8 @@ def verify(path, layer):
     # площі контурів з DXF (дуги розгорнуті) проти еталонної геометрії — ловить невірний знак bulge
     def area(e): return Polygon([(v.x, v.y) for v in dxfpath.make_path(e).flattening(0.01)]).area
     ref = {"CUT_OUTER": [G.outline_poly().area]}
-    ref["CUT_INNER"] = sorted([G.slot_poly(*sl).area for sl in G.SLOTS] + [G.rrect_poly(*G.POCKET[layer]).area])
+    ref["CUT_INNER"] = sorted([G.slot_poly(*sl).area for sl in G.SLOTS] + [G.rrect_poly(*G.POCKET[layer]).area]
+                              + ([G.vslot_poly(*sl).area for sl in G.BATT_SLOTS] if layer == "B" else []))
     got_o = [area(p) for p in polys if p.dxf.layer == "CUT_OUTER"]
     got_i = sorted(area(p) for p in polys if p.dxf.layer == "CUT_INNER")
     area_ok = (len(got_i) == len(ref["CUT_INNER"])

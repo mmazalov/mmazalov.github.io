@@ -31,34 +31,46 @@ PLATE = G.PLATE                    # центральна пластина — �
 MOTOR_D = 69.0
 SL_W, SL_H = 298.5, 259.0
 GPS_FWD = -230.0
-RF = None                          # звіт RF заповнюється нижче
-SHIFT = C.battery_trim()[0]        # зсув касети батареї по x (мінус — назад)
+SHIFT = 0.0                        # касета в номінальному положенні; хід ±C.BATT_TRIM
 BATT_X0 = C.BATT["x0"]
-GROUND = C.LEG_BOT[2] - C.R_T      # низ лиж
+GROUND = C.GROUND                  # низ лиж
 Z = dict(prop=0, sl_top=-6, sl_bot=-44.5, top=-55, arm=-80, bot=-105, bat=-171,
          rail=C.Z_RAIL, skid=C.LEG_BOT[2], gps=145)
-# payload: (fwd, right, розмір fwd, розмір right, маса кг, колір)
-PAY = {
-    "ZR10":         (C.ZR10["x"], C.ZR10["y"], C.ZR10["w"], C.ZR10["w"], C.ZR10["m"], CAM),
-    "ретранслятор": (C.REP["x"], C.REP["y"], C.REP["lx"], C.REP["ly"], C.REP["m"], RFC),
-    "рупор":        (C.HORN["x"], C.HORN["y"], C.HORN["ap"], C.HORN["ap"], C.HORN["m"], RFC),
-    "Ягі":          (C.YAGI["x"], C.YAGI["y"], 24, C.YAGI["elems"][0][0], C.YAGI["m"], RFC),
-}
 LEG_TOP = (C.LEG_TOP[0], C.LEG_TOP[1])
 LEG_BOT = (C.LEG_BOT[0], C.LEG_BOT[1])
 RAIL_Y = C.RAIL_Y
-RF = C.rf_report(SHIFT)
-MX, MY = C.payload_mass_moment()
-# маса і ресурс: AUW = 13.48 кг (з реальними пластинами) + різниця реальної клітки проти 0.492 кг у бюджеті
-AUW = 13.48 + C.cage_mass()["total"] / 1000 - 0.492
-
-def perf(auw, D=28, n=4, fm=0.51, extra=84, maxT=8.5, avi=35, E=1732.0):
-    rho = 1.225 * (1 - 2.25577e-5 * 1500) ** 4.25588
-    T = auw / n * 9.81; A = math.pi * (D * 0.0254 / 2) ** 2
-    P = (T ** 1.5 / math.sqrt(2 * rho * A)) / fm * n + avi + extra
-    return P, E * 0.88 / P * 60 - 3, (maxT * n * rho / 1.225) / auw
+BASE = C.base_kg()
+AUW0 = BASE + C.BATT_KG            # без навісного
+perf = C.perf
 
 def mz(v): return f"{v:.0f}".replace("-", "−") if v < 0 else (f"+{v:.0f}" if v > 0 else "0")
+
+def zone_tag(x, y, k, col, size=7):
+    circ(x, y, 2.6, 0.35, col, "#ffffff", 1); tx(x, y - 1.05, k, size, True, col, "c")
+
+def draw_zones(view, s, ox, oy, which="ABCD", tags=True):
+    """Зони навісного в одній із проекцій: plan (ніс угору), side (ніс праворуч), front (правий борт ліворуч)."""
+    seen = set()
+    for k, bx in C.zone_boxes():
+        if k not in which: continue
+        col = C.ZONES[k]["col"]; x0, x1, y0, y1, z0, z1 = bx
+        if view == "plan": X0, X1, Y0, Y1 = ox + y0 * s, ox + y1 * s, oy + x0 * s, oy + x1 * s
+        elif view == "side": X0, X1, Y0, Y1 = ox + x0 * s, ox + x1 * s, oy + z0 * s, oy + z1 * s
+        else: X0, X1, Y0, Y1 = ox - y1 * s, ox - y0 * s, oy + z0 * s, oy + z1 * s
+        key = (round(X0), round(X1), round(Y0), round(Y1))
+        rect(X0, Y0, X1 - X0, Y1 - Y0, 0.3, col, col, 0.06, dash=(2, 1.2))
+        if tags and key not in seen:
+            lbl = k if view != "front" or k == "D" else "A B C"
+            if view == "front" and k != "D":
+                for i_, kk in enumerate("ABC"): zone_tag(X0 + 6 + i_ * 6.5, Y1 - 5, kk, C.ZONES[kk]["col"], 6.5)
+            else:
+                zone_tag((X0 + X1) / 2, (Y0 + Y1) / 2 if view != "plan" else Y1 - 5, k, col)
+        seen.add(key)
+
+def zone_top(view, s, ox, oy):
+    x0, x1, y0, y1, z0, z1 = C.ZONES["T"]["box"]; col = C.ZONES["T"]["col"]
+    if view == "side": rect(ox + x0 * s, oy + z0 * s, (x1 - x0) * s, (z1 - z0) * s, 0.35, col, col, 0.08, dash=(2, 1.2))
+    else: rect(ox - y1 * s, oy + z0 * s, (y1 - y0) * s, (z1 - z0) * s, 0.35, col, col, 0.08, dash=(2, 1.2))
 
 # ---------------- примітиви ----------------
 def new_canvas(path, title):
@@ -162,12 +174,11 @@ TOTAL = 4
 PARTS = [
     (1, "Гвинт 28\" складаний CF, 2 лоп.", "4"), (2, "Мотор T-Motor MN6012 KV170", "4"),
     (3, "Промінь CF Ø50×2 UD, L 555", "4"), (4, "Пластина верхня CF 2 мм 250×250", "1"),
-    (5, "Пластина нижня CF 2 мм 250×250", "1"), (6, "Starlink Mini, демпфери 10 мм", "1"),
+    (5, "Пластина нижня CF 2 мм 250×250", "1"), (6, "Зона T — верхнє навісне, 4×M4", "—"),
     (7, "Pixhawk 6X + RPi CM4 baseboard", "1"), (8, "Батарея 12S1P у касеті G10", "1"),
     (9, "Щогла GPS, h 200", "1"), (10, "Рейки й поперечки G10 Ø16×14", "4"),
     (11, f"Ніжка клітки CF Ø16×14, L {C.LEG_CUT}", "4"), (12, "Лижа CF Ø16, L 600", "2"),
-    (13, "SIYI ZR10", "1"), (14, "Блок ретранслятора", "1"),
-    (15, "Рупор 3.3 ГГц 16 dBi", "1"), (16, "Ягі 900 МГц, 5 ел.", "1"),
+    (13, "Монтажна плита між рейками, CF 2", "за потр."), (14, "Монтажна плита бортова, G10 2", "за потр."),
 ]
 
 def horn_shape(cx, z_top, z_bot, w_ap, w_throat, s, oxp, oyp, col, dash=None, fx=1):
@@ -193,14 +204,14 @@ def sheet1():
         (x0, y0), (x1, y1) = T(f * a0 / R, r * a0 / R), T(f, r)
         poly([(x0 + nx * hw, y0 + ny * hw), (x1 + nx * hw, y1 + ny * hw),
               (x1 - nx * hw, y1 - ny * hw), (x0 - nx * hw, y0 - ny * hw)], 0.35, INK, INK, 0.18)
-    for name, (f, r, sf, sr, m, col) in PAY.items():
-        x, y = T(f, r); rect(x - sr * s / 2, y - sf * s / 2, sr * s, sf * s, 0.2, col, col, 0.06, dash=(2, 1.5))
+    draw_zones("plan", s, ox, oy, tags=False)
     rect(ox - PLATE * s / 2, oy - PLATE * s / 2, PLATE * s, PLATE * s, 0.5, INK, "#ffffff", 0.9)
+    circ(ox, oy, 195 * s, 0.45, SLC, SLC, 0.1, dash=(2.5, 1.5))
     c.saveState(); c.translate(ox * mm, oy * mm); c.rotate(45)
-    c.setStrokeColor(hx(SLC)); c.setLineWidth(0.45 * mm); c.setFillColor(hx(SLC)); c.setFillAlpha(0.12)
-    c.roundRect(-SL_W * s / 2 * mm, -SL_H * s / 2 * mm, SL_W * s * mm, SL_H * s * mm, 1.5 * mm, 1, 1)
-    c.restoreState(); c.setFillAlpha(1)
-    tx(ox, oy + 1, "Starlink Mini", 7.5, True, SLC, "c"); tx(ox, oy - 3, "поворот 45°", 6.5, False, SLC, "c")
+    c.setStrokeColor(hx(SLC)); c.setLineWidth(0.2 * mm); c.setDash([1, 1], 0)
+    c.rect(-SL_W * s / 2 * mm, -SL_H * s / 2 * mm, SL_W * s * mm, SL_H * s * mm, 1, 0)
+    c.restoreState(); c.setDash()
+    tx(ox, oy + 1, "зона T", 7.5, True, SLC, "c"); tx(ox, oy - 3, "R195 · h 44", 6.5, False, SLC, "c")
     gx, gy = T(GPS_FWD, 0)
     ln(ox, oy - PLATE * s / 2, gx, gy, 0.8, ACC); circ(gx, gy, 2.2, 0.3, ACC, ACC, 0.9)
     leader(gx, gy, gx + 19, gy - 8, "GPS, щогла 200 мм", 7, ACC)
@@ -227,8 +238,8 @@ def sheet1():
             ("Гвинт", "28\" складаний CF"), ("Зазор між гвинтами", "102 (14 % D)"),
             ("Внутрішній досяг гвинта", "219"), ("Промінь", "Ø50×2, UD"),
             ("Центральні пластини", "250×250, CF 2 мм ×2"), ("Мотори", "MN6012 KV170"),
-            ("AUW (пакет 5.0 кг)", f"{AUW:.1f} кг"), ("Висіння на 1500 м", f"≈ {perf(AUW)[1]:.0f} хв"),
-            ("T/W на 1500 м", f"{perf(AUW)[2]:.2f}")]
+            ("Без навісного, з батареєю 5.0 кг", f"{AUW0:.1f} кг"), ("Висіння без навісного, 1500 м", f"≈ {perf(AUW0)[1]:.0f} хв"),
+            ("Бюджет навісного до T/W 2.0", f"до {C.payload_max():.1f} кг")]
     for k, v in rows:
         tx(X, Y, k, 7, False, MUT); tx(406, Y, v, 7, True, INK, "r"); Y -= 5.2
     Y -= 4; tx(X, Y, "Порядок моторів — ArduCopter Quad X", 8.5, True); Y -= 6.5
@@ -237,13 +248,13 @@ def sheet1():
               "Напрям обертання звірити в Mission Planner", "до встановлення гвинтів."):
         tx(X, Y, t, 7); Y -= 4.8
     Y -= 4; tx(X, Y, "Позначення", 8.5, True); Y -= 6.5
-    for col, t in ((MUT, "диск гвинта"), (SLC, "Starlink Mini (на верхній пластині)"),
-                   (ACC, "GPS на щоглі"), (RFC, "RF payload під рамою (пунктир)"),
-                   (CAM, "SIYI ZR10 під рамою (пунктир)")):
+    for col, t in ((MUT, "диск гвинта"), (SLC, "зона T — над верхньою пластиною"),
+                   (ACC, "GPS на щоглі"), (C.ZONES["B"]["col"], "зони A–D під рамою (пунктир)"),
+                   (C.ZONES["A"]["col"], "деталі зон — cage-drawings.pdf")):
         rect(X, Y - 0.8, 5, 3, 0.3, col, col, 0.25); tx(X + 7, Y, t, 7); Y -= 5.2
     Y -= 3
-    for t in ("Starlink у «природній» орієнтації заходить",
-              "кутами в диск гвинта — лише поворот на 45°.",
+    for t in ("Прямокутне в зоні T (напр. 298×259) заходить",
+              "кутами в диск гвинта — ставити з поворотом 45°.",
               "Щогла GPS на осі корми: запас до диска 90 мм."):
         tx(X, Y, t, 6.8, False, DIM); Y -= 4.6
     c.showPage()
@@ -262,34 +273,24 @@ def sheet2():
     rect(ox - D45 * s, oy + Z["bot"] * s, 2 * D45 * s, ARM_D * s, 0.3, INK, INK, 0.15)
     for zz in (Z["top"], Z["bot"]): rect(ox - PLATE / 2 * s, oy + zz * s - 0.4, PLATE * s, 0.8, 0.3, INK, INK, 1)
     slx = (SL_W / 2 + SL_H / 2) * math.cos(math.radians(45))
-    rect(ox - slx * s, oy + Z["sl_bot"] * s, 2 * slx * s, (Z["sl_top"] - Z["sl_bot"]) * s, 0.4, SLC, SLC, 0.15)
+    zone_top("side", s, ox, oy)
     rect(ox - 55 * s, oy - 100 * s, 110 * s, 40 * s, 0.35, ACC, ACC, 0.12, dash=(2, 1.2))
     rect(ox + (BATT_X0 + SHIFT) * s, oy + Z["bat"] * s, 187 * s, (Z["bot"] - Z["bat"]) * s, 0.4, PWR, PWR, 0.12)
     for sg in (-1, 1): ln(*S(sg * LEG_TOP[0], C.LEG_TOP[2]), *S(sg * LEG_BOT[0], Z["skid"]), 1.1, INK)
     ln(*S(C.SKID_X[0], Z["skid"]), *S(C.SKID_X[1], Z["skid"]), 1.4, INK)
     ln(*S(C.RAIL_X[0], Z["rail"]), *S(C.RAIL_X[1], Z["rail"]), 0.9, INK)
     for _, (xb_, _) in C.XBARS.items(): circ(*S(xb_, C.Z_XBAR), 8 * s + 0.2, 0.35, INK, INK, 1)
-    for P_ in (C.P_HORN, C.P_ZR10, C.T_REP):
-        rect(ox + P_["x0"] * s, oy + P_["z0"] * s, (P_["x1"] - P_["x0"]) * s, (P_["z1"] - P_["z0"]) * s + 0.3, 0.3, INK, INK, 0.6)
     ln(*S(-560, GROUND), *S(560, GROUND), 0.2, MUT)
     for i in range(-27, 28):
         x0, y0 = S(i * 20, GROUND); ln(x0, y0, x0 - 1.5, y0 - 1.5, 0.12, MUT)
-    bx, _ = S(C.YAGI["x"], 0)
-    ln(bx, oy + C.YAGI["top"] * s, bx, oy + (C.YAGI["top"] - C.YAGI["boom"]) * s, 0.5, RFC, dash=(1.5, 1))
-    for zz, L in C.yagi_elems(): circ(bx, oy + zz * s, 0.8, 0.2, RFC)
-    horn_shape(C.HORN["x"], C.HORN["top"], C.HORN["top"] - C.HORN["L"], C.HORN["ap"], C.HORN["thr"], s, ox, oy, RFC)
-    rb = C.rep_box(); rect(ox + rb["x0"] * s, oy + rb["z0"] * s, (rb["x1"] - rb["x0"]) * s, (rb["z1"] - rb["z0"]) * s, 0.35, RFC, RFC, 0.1)
-    zb = C.zr10_box(); rect(ox + zb["x0"] * s, oy + zb["z0"] * s, (zb["x1"] - zb["x0"]) * s, (zb["z1"] - zb["z0"]) * s, 0.4, CAM, CAM, 0.12, r=1.5)
-    circ(ox + C.ZR10["x"] * s, oy + (zb["z0"] + 38) * s, 38 * s * 0.6, 0.35, CAM, "#ffffff", 1)
+    draw_zones("side", s, ox, oy)
     gx, _ = S(GPS_FWD, 0)
     ln(gx, oy + Z["top"] * s, gx, oy + Z["gps"] * s, 0.6, ACC)
     rect(gx - 30 * s, oy + Z["gps"] * s, 60 * s, 15 * s, 0.3, ACC, ACC, 0.5)
     B = [(1, S(-600, 0), (40, 239)), (2, S(-406.6, -27), (70, 251)), (3, S(-300, -80), (95, 263)),
          (9, S(-230, 150), (122, 269)), (6, S(-120, -25), (150, 263)), (4, S(110, -55), (205, 263)),
          (7, S(40, -80), (230, 257)), (5, S(110, -105), (293, 207)), (8, S(70, -140), (293, 195)),
-         (14, S(C.REP["x"], -250), (293, 179)), (13, S(250, -300), (293, 161)), (11, S(146, -470), (293, 139)),
-         (12, S(260, Z["skid"]), (293, 123)), (10, S(-260, Z["rail"]), (40, 183)), (15, S(-230, -420), (40, 135)),
-         (16, S(C.YAGI["x"], -420), (150, 100))]
+         (11, S(146, -470), (293, 139)), (12, S(260, Z["skid"]), (293, 123)), (10, S(-260, Z["rail"]), (40, 183))]
     for n, (ax, ay), (bx2, by2) in B: balloon(n, ax, ay, bx2, by2)
     dim(*S(700, GROUND), *S(700, Z["sl_top"]), f"{Z['sl_top'] - GROUND:.0f}", 0)
     dim(*S(770, GROUND), *S(770, Z["gps"]), f"{Z['gps'] - GROUND:.0f} з щоглою", 0)
@@ -298,16 +299,15 @@ def sheet2():
     tx(X, Y, "Рівні, z", 10, True); Y -= 7.5
     lv = [("GPS, верх", Z["gps"]), ("Гвинти", 0), ("Starlink, верх", Z["sl_top"]),
           ("Верхня пластина", Z["top"]), ("Вісь променя", Z["arm"]), ("Нижня пластина", Z["bot"]),
-          ("Низ батареї", Z["bat"]), ("Рейки", C.Z_RAIL), ("Поперечки", C.Z_XBAR), ("Низ ZR10", zb["z0"]),
-          ("Апертура рупора", C.HORN["top"] - C.HORN["L"]), ("Кінець Ягі", C.YAGI["top"] - C.YAGI["boom"]), ("Низ лиж", GROUND)]
+          ("Низ батареї", Z["bat"]), ("Рейки", C.Z_RAIL), ("Поперечки", C.Z_XBAR), ("Верх зон A–D", C.Z_TOP_ZONE),
+          ("Низ зон A–D", C.Z_BOT_ZONE), ("Низ лиж", GROUND)]
     for k, v in lv:
         tx(X, Y, k, 7, False, MUT); tx(406, Y, mz(v), 7, True, INK, "r"); Y -= 5
     tx(24, 88, "Розв'язки", 9, True)
-    notes = [f"Рупор і ZR10 не можуть обидва дивитись вниз по центру: камера в носі (x +{C.ZR10['x']:.0f}), рупор у кормі (x {mz(C.HORN['x'])}).",
-             "Клітка payload = шасі. Вузли, труби й плити клітки — окремий комплект cage-drawings.pdf.",
-             f"Ягі (поз. 16) x +{C.YAGI['x']:.0f}, y {mz(C.YAGI['y'])}: до рупора {RF['рупор']:.0f}, ZR10 {RF['ZR10']:.0f}, ретранслятора {RF['ретранслятор']:.0f}, ніжок {RF['ніжки CF']:.0f} мм — не менше λ/4 = 83 мм.",
-             f"Виняток: батарея {RF['батарея']:.0f} мм над рефлектором, лижа {RF['лижі CF']:.0f} мм. КСХВ Ягі міряти на зібраному апараті.",
-             f"Касета батареї зсунута на {abs(SHIFT):.0f} мм назад — компенсує момент payload +{MX:.0f} кг·мм.",
+    notes = ["Зони навісного: A–D під рамою, T над верхньою пластиною. Габарити й правила — cage-drawings.pdf, аркуші 1–2.",
+             "Клітка payload = шасі. Рейки й поперечки — площина кріплення, зони починаються під нею.",
+             f"Просвіт під зонами {C.MIN_GROUND:.0f} мм; до ніжок, лиж і батареї — не менше 10 мм.",
+             f"Касета батареї в пазах ±{C.BATT_TRIM:.0f} мм — балансування ЦМ під ваше навісне (±{C.BATT_KG * C.BATT_TRIM:.0f} кг·мм).",
              "Авіоніка між пластинами: промені займають лише 4 радіальні смуги, центр вільний, просвіт 50 мм."]
     Y = 81
     for t in notes: tx(24, Y, "• " + t, 7); Y -= 5
@@ -328,7 +328,7 @@ def sheet3():
             ln(xb + sg * (k % 2) * 1.2, oy + (Z["bot"] + k * 16.7) * s, xb + sg * ((k + 1) % 2) * 1.2, oy + (Z["bot"] + (k + 1) * 16.7) * s, 0.3, INK)
     for zz in (Z["top"], Z["bot"]): rect(ox - PLATE / 2 * s, oy + zz * s - 0.4, PLATE * s, 0.8, 0.3, INK, INK, 1)
     slx = (SL_W / 2 + SL_H / 2) * math.cos(math.radians(45))
-    rect(ox - slx * s, oy + Z["sl_bot"] * s, 2 * slx * s, (Z["sl_top"] - Z["sl_bot"]) * s, 0.4, SLC, SLC, 0.15)
+    zone_top("front", s, ox, oy)
     rect(ox - 87 * s, oy + Z["bat"] * s, 174 * s, (Z["bot"] - Z["bat"]) * s, 0.4, PWR, PWR, 0.12)
     for sg in (-1, 1):
         ln(*F(sg * LEG_TOP[1], C.LEG_TOP[2]), *F(sg * LEG_BOT[1], Z["skid"]), 1.1, INK)
@@ -336,24 +336,17 @@ def sheet3():
         circ(*F(sg * RAIL_Y, Z["rail"]), 8 * s + 0.2, 0.35, INK, INK, 1)
     y0_, y1_ = C.XBARS["X1"][1]
     ln(*F(y0_, C.Z_XBAR), *F(y1_, C.Z_XBAR), 1.1, INK)
-    for P_ in (C.P_HORN, C.P_ZR10, C.T_REP):
-        rect(ox - P_["y1"] * s, oy + P_["z0"] * s, (P_["y1"] - P_["y0"]) * s, (P_["z1"] - P_["z0"]) * s + 0.3, 0.3, INK, INK, 0.6)
-    horn_shape(C.HORN["y"], C.HORN["top"], C.HORN["top"] - C.HORN["L"], C.HORN["ap"], C.HORN["thr"], s, ox, oy, RFC, dash=(2, 1.2), fx=-1)
-    yb, _ = F(C.YAGI["y"], 0)
-    ln(yb, oy + C.YAGI["top"] * s, yb, oy + (C.YAGI["top"] - C.YAGI["boom"]) * s, 0.6, RFC)
-    for zz, L in C.yagi_elems():
-        ln(yb - L / 2 * s, oy + zz * s, yb + L / 2 * s, oy + zz * s, 0.45, RFC)
-    zb = C.zr10_box(); rect(ox - zb["y1"] * s, oy + zb["z0"] * s, (zb["y1"] - zb["y0"]) * s, (zb["z1"] - zb["z0"]) * s, 0.4, CAM, CAM, 0.15, r=1.5)
-    circ(ox - C.ZR10["y"] * s, oy + (zb["z0"] + 38) * s, 38 * s * 0.6, 0.35, CAM, "#ffffff", 1)
-    rb = C.rep_box(); rect(ox - rb["y1"] * s, oy + rb["z0"] * s, (rb["y1"] - rb["y0"]) * s, (rb["z1"] - rb["z0"]) * s, 0.35, RFC, RFC, 0.1)
+    draw_zones("front", s, ox, oy)
+    rect(ox - 95 * s, oy + (C.Z_RAIL - C.R_T - 2) * s, 190 * s, 2 * s + 0.3, 0.3, INK, INK, 0.7)
+    for sg in (-1, 1):
+        rect(ox + (sg * 150 - 75) * s, oy + (C.Z_XBAR - C.R_T - 2) * s, 150 * s, 2 * s + 0.3, 0.3, "#2e7d4f", "#2e7d4f", 0.7)
     ln(*F(560, GROUND), *F(-560, GROUND), 0.2, MUT)
     tx(ox - 290 * s - 6, oy + GROUND * s - 7, "ПРАВИЙ БОРТ", 7, True, MUT, "r")
     tx(ox + 290 * s + 6, oy + GROUND * s - 7, "ЛІВИЙ БОРТ", 7, True, MUT, "l")
     dim(*F(LEG_BOT[1], GROUND), *F(-LEG_BOT[1], GROUND), f"колія {2 * LEG_BOT[1]:.0f}", -9)
     B = [(6, F(150, -25), (95, 250)), (4, F(-110, -55), (180, 252)), (3, F(-350, -80), (238, 240)),
-         (8, F(-60, -140), (245, 205)), (10, F(-RAIL_Y, Z["rail"]), (245, 187)), (16, F(C.YAGI["y"], -330), (245, 150)),
-         (15, F(-20, -440), (175, 96)), (13, F(40, -300), (60, 160)), (14, F(C.REP["y"], -250), (60, 180)),
-         (11, F(156, -300), (60, 140)), (12, F(LEG_BOT[1], Z["skid"]), (60, 115))]
+         (8, F(-60, -140), (245, 205)), (10, F(-RAIL_Y, Z["rail"]), (245, 187)), (13, F(-60, C.Z_RAIL - 11), (245, 170)),
+         (14, F(-200, C.Z_XBAR - 11), (245, 152)), (11, F(156, -300), (60, 140)), (12, F(LEG_BOT[1], Z["skid"]), (60, 115))]
     for n, (ax, ay), (bx2, by2) in B: balloon(n, ax, ay, bx2, by2)
     X = 288; Y = 272
     tx(X, Y, "Специфікація", 10, True); Y -= 7
@@ -362,10 +355,10 @@ def sheet3():
     for n, name, q in PARTS:
         tx(X + 2, Y, str(n), 7, True); tx(X + 9, Y, name, 7); tx(406, Y, q, 7, False, INK, "r"); Y -= 5
     tx(24, 84, "Примітки", 9, True)
-    notes = [f"Ягі (y {mz(C.YAGI['y'])}) і рупор (x {mz(C.HORN['x'])}) рознесені на {RF['рупор']:.0f} мм — більше λ/4 = 83 мм.",
+    notes = ["Зони A, B, C мають однаковий переріз у цьому виді; D — вузький коридор між ніжками (±75).",
              "Колія лиж 580 ≥ 550 — стійкість на ухилі з батареєю 5 кг під центром.",
-             "Рейки, поперечки й лоток ретранслятора — склопластик G10: радіопрозорі поруч з Ягі.",
-             "Камера попереду рупора: у прямому огляді рупор позаду ZR10 і на цьому виді прихований (пунктир)."]
+             "Антени нижче 1 ГГц — у бортових частинах зон, ≥ λ/4 (83 мм на 900 МГц) від карбону й металу.",
+             "Монтажні плити (поз. 13, 14) — приклади; кількість і положення — під ваше навісне."]
     Y = 77
     for t in notes: tx(24, Y, "• " + t, 7); Y -= 5
     c.showPage()
@@ -374,36 +367,34 @@ def sheet3():
 # АРКУШ 4 — план payload М 1:4 + центральна пластина М 1:2
 # ================================================================
 def sheet4():
-    sheet(4, TOTAL, "План payload · центральна пластина", "1:4 / 1:2")
+    sheet(4, TOTAL, "Зони встановлення · центральна пластина", "1:4 / 1:2")
     s = 0.25; ox, oy = 105, 160
     def T(f, r): return ox + r * s, oy + f * s
-    tx(24, 274, "ПЛАН PAYLOAD", 12, True); tx(24, 268, "проекція на вид зверху · рама фантомом", 7, False, MUT)
+    tx(24, 274, "ЗОНИ ВСТАНОВЛЕННЯ — ПЛАН", 12, True); tx(24, 268, "проекція на вид зверху · рама фантомом", 7, False, MUT)
     rect(ox - PLATE / 2 * s, oy - PLATE / 2 * s, PLATE * s, PLATE * s, 0.25, MUT, dash=(2, 1.5))
-    rect(ox - 87 * s, oy + (BATT_X0 + SHIFT) * s, 174 * s, 187 * s, 0.3, PWR, PWR, 0.08, dash=(2, 1.5))
+    rect(ox - 87 * s, oy + BATT_X0 * s, 174 * s, 187 * s, 0.3, PWR, PWR, 0.08, dash=(2, 1.5))
+    for sg in (-1, 1):
+        ln(*T(-C.BATT_TRIM, 0 + sg * 60), *T(C.BATT_TRIM, 0 + sg * 60), 0.35, PWR)
+        arrowhead(*T(C.BATT_TRIM, sg * 60), 0, 1, PWR, 1.4, 0.45); arrowhead(*T(-C.BATT_TRIM, sg * 60), 0, -1, PWR, 1.4, 0.45)
+    tx(*T(-60, 0), f"касета ±{C.BATT_TRIM:.0f}", 6, True, PWR, "c")
+    circ(ox, oy, C.PROP_SHADOW_R * s, 0.25, MUT, dash=(3, 2))
+    tx(ox + C.PROP_SHADOW_R * s * 0.72, oy + C.PROP_SHADOW_R * s * 0.72 + 1, "тінь R219", 6, False, MUT)
+    draw_zones("plan", s, ox, oy)
     for sg in (-1, 1):
         ln(*T(C.SKID_X[0], sg * LEG_BOT[1]), *T(C.SKID_X[1], sg * LEG_BOT[1]), 1.0, INK)
-        ln(*T(C.RAIL_X[0], sg * RAIL_Y), *T(C.RAIL_X[1], sg * RAIL_Y), 0.7, INK)
+        ln(*T(C.RAIL_X[0], sg * RAIL_Y), *T(C.RAIL_X[1], sg * RAIL_Y), 0.7, "#2e7d4f")
         for sf in (-1, 1):
             circ(*T(sf * LEG_TOP[0], sg * LEG_TOP[1]), 1.1, 0.3, INK, INK, 1)
-            ln(*T(sf * LEG_TOP[0], sg * LEG_TOP[1]), *T(sf * LEG_BOT[0], sg * LEG_BOT[1]), 0.3, MUT, dash=(1.5, 1))
-    for n_, (xb_, (y0_, y1_)) in C.XBARS.items():
-        ln(*T(xb_, y0_), *T(xb_, y1_), 0.6, INK)
-        lx_, ly_ = T(xb_, y1_); tx(lx_ + 1.5, ly_ - 1, n_, 6, True, MUT)
-    for P_ in (C.P_HORN, C.P_ZR10, C.T_REP):
-        rect(ox + P_["y0"] * s, oy + P_["x0"] * s, (P_["y1"] - P_["y0"]) * s, (P_["x1"] - P_["x0"]) * s, 0.25, INK, INK, 0.05)
-    for name, (f, r, sf, sr, m, col) in PAY.items():
-        x, y = T(f, r); rect(x - sr * s / 2, y - sf * s / 2, sr * s, sf * s, 0.45, col, col, 0.15, r=0.8)
-        ly = y + (7.5 if name == "Ягі" else 0.5)
-        tx(x, ly, name, 7, True, col, "c"); tx(x, ly - 3.5, f"{m:.2f} кг", 6.3, False, col, "c")
+            ln(*T(sf * LEG_TOP[0], sg * LEG_TOP[1]), *T(sf * LEG_BOT[0], sg * LEG_BOT[1]), 0.6, INK)
     circ(ox, oy, 0.8, 0.2, INK, INK, 1)
     tx(ox, oy + 300 * s + 5, "НІС", 9, True, INK, "c")
     poly([(ox, oy + 300 * s + 11), (ox - 2, oy + 300 * s + 9), (ox + 2, oy + 300 * s + 9)], 0.1, INK, INK, 1)
-    dim(*T(-300, -LEG_BOT[1]), *T(-300, LEG_BOT[1]), f"колія {2 * LEG_BOT[1]:.0f}", -6)
-    dim(*T(C.HORN["x"], -300), *T(C.ZR10["x"], -300), f"рупор–ZR10 {C.ZR10['x'] - C.HORN['x']:.0f}", 10, 6.5)
-    dim(*T(C.YAGI["x"], -300), *T(C.HORN["x"], -300), f"{C.YAGI['x'] - C.HORN['x']:.0f}", -4, 6)
-    items = " ".join((("+ " if i else "") if v[0] >= 0 else "− ") + f"{v[4]:.2f}·{abs(v[0]):.0f}" for i, v in enumerate(PAY.values()))
-    tx(24, 60, f"Момент payload по x: {items} = {MX:+.0f} кг·мм", 7, False, DIM)
-    tx(24, 55, f"→ касету батареї (5 кг) зсунути на {abs(SHIFT):.0f} мм назад, ЦМ апарата в центрі. По y: {MY:+.0f} кг·мм = {MY / AUW:.1f} мм, у допуску.", 7, False, DIM)
+    zA, zB, zC, zD = (C.ZONES[k]["box"] for k in "ABCD")
+    dim(*T(zC[0], -300), *T(zA[1], -300), "580 (A–D уздовж)", 9, 6.3)
+    dim(*T(-300, zB[2]), *T(-300, zB[3]), f"{zB[3] - zB[2]:.0f}", -6, 6.3)
+    dim(*T(zB[0], 290), *T(zB[1], 290), f"B {zB[1] - zB[0]:.0f}", -3, 6)
+    tx(24, 60, "Зони: A носова 123×544, B центральна 208×544, C кормова 123×544, D коридори 63×150 (×2); висота 288.", 7, False, INK)
+    tx(24, 55, f"ЦМ: касета батареї в пазах ±{C.BATT_TRIM:.0f} мм компенсує ±{C.BATT_KG * C.BATT_TRIM:.0f} кг·мм по x. По y компенсації немає.", 7, False, DIM)
     # ---- пластина ----
     s2 = 0.5; px, py = 318, 172
     tx(215, 274, "ЦЕНТРАЛЬНА ПЛАСТИНА", 12, True)
@@ -417,6 +408,8 @@ def sheet4():
         ln(px + ux * 50 * s2, py + uy * 50 * s2, px + ux * 185 * s2, py + uy * 185 * s2, 0.15, MUT, dash=(4, 1.5, 1, 1.5))
     for sl in G.SLOTS:
         poly([(px + x * s2, py + y * s2) for x, y in list(G.slot_poly(*sl).exterior.coords)[:-1]], 0.3, INK, "#ffffff", 1)
+    for sl in G.BATT_SLOTS:
+        poly([(px + x * s2, py + y * s2) for x, y in list(G.vslot_poly(*sl).exterior.coords)[:-1]], 0.3, ACC, "#ffffff", 1)
     for layer, col, dy in (("T", SLC, 5), ("B", ACC, -1)):
         w, h, r = G.POCKET[layer]
         poly([(px + x * s2, py + y * s2) for x, y in list(G.rrect_poly(w, h, r).exterior.coords)[:-1]], 0.3, col, dash=(1.5, 1))
@@ -441,7 +434,8 @@ def sheet4():
     mT, mB = G.mass_g(G.check("T")[1]), G.mass_g(G.check("B")[1])
     for t in ("Затискач Ø50: 4×M4, крок 40 уздовж × 64 впоперек. Пази 40×12 — під джгути.",
               f"Пластина 250×250 (на 210×200 затискачі Ø50 не поміщаються): верх {mT:.0f} г, низ {mB:.0f} г.",
-              "DXF для різки: fpv/cnc/plate_top.dxf, plate_bottom.dxf. Півкруглий виріз на кромці — ніс."):
+              f"Нижня: 2 пази касети 60×4.2 під 2×M4 кожен — хід ±{C.BATT_TRIM:.0f} мм. Півкруглий виріз на кромці — ніс.",
+              "DXF для різки: fpv/cnc/plate_top.dxf, plate_bottom.dxf."):
         tx(215, Y, t, 6.4, False, DIM if "Пластина" in t else INK); Y -= 4.4
     c.showPage()
     return H

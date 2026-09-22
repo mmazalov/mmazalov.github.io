@@ -34,9 +34,6 @@ def holes():
     for x in (-55, 55):
         for y in (-40, 40):
             H.append((x, y, M3, "B", "демпфери Pixhawk"))
-    for x in (-95, 95):
-        for y in (-26, 4):
-            H.append((x, y, M4, "B", "касета батареї"))
     for sy in (-1, 1):
         for x in (-50, -30, 30, 50):
             H.append((x, sy * 115, M4, "B", "ніжки клітки"))
@@ -44,6 +41,8 @@ def holes():
 
 # пази під джгути: (cx, cy, довжина, ширина) — прямі кінці скруглені повністю
 SLOTS = [(0.0, 70.0, 40.0, 12.0), (0.0, -70.0, 40.0, 12.0)]
+# пази касети батареї (лише нижня): уздовж ходу x — вперед/назад, 2×M4 у кожному, хід ±15 мм
+BATT_SLOTS = [(-95.0, 0.0, 60.0, M4), (95.0, 0.0, 60.0, M4)]   # (cx, cy, довжина по y, ширина)
 # центральні полегшувальні вирізи: (w, h, r) — прямокутник зі скругленнями
 POCKET = {"T": (80.0, 80.0, 10.0), "B": (70.0, 50.0, 10.0)}
 
@@ -57,6 +56,9 @@ def outline_poly():
 
 def slot_poly(cx, cy, L, W):
     return box(cx - (L - W) / 2, cy, cx + (L - W) / 2, cy).buffer(W / 2, 32)
+
+def vslot_poly(cx, cy, L, W):
+    return box(cx, cy - (L - W) / 2, cx, cy + (L - W) / 2).buffer(W / 2, 32)
 
 def rrect_poly(w, h, r):
     return box(-w / 2 + r, -h / 2 + r, w / 2 - r, h / 2 - r).buffer(r, 32)
@@ -76,6 +78,7 @@ def check(layer, min_web=6.0, min_edge_k=1.5):
     out = outline_poly()
     hs = layer_holes(layer)
     feats = [("паз", slot_poly(*s)) for s in SLOTS] + [("виріз", rrect_poly(*POCKET[layer]))]
+    if layer == "B": feats += [("паз касети", vslot_poly(*s)) for s in BATT_SLOTS]
     clamps = [clamp_poly(a) for a in ARM_DIRS]
     for i, (x, y, d, _, g) in enumerate(hs):
         p = Point(x, y); hole = p.buffer(d / 2, 32)

@@ -22,30 +22,45 @@ def leg_at(z, sx=1, sy=1):
 J2_X, J2_Y = leg_at(Z_RAIL)              # вузол ніжка–рейка
 RAIL_Y = round(J2_Y - 18.0)              # рейка зсунута всередину на 18 мм від осі ніжки (хрестовий затискач)
 RAIL_X = (-280.0, 280.0)
-XBARS = {"X1": (30.0, (-155.0, 180.0)), "X2": (-40.0, (-90.0, 180.0))}
+XBARS = {"X1": (50.0, (-180.0, 180.0)), "X2": (-50.0, (-180.0, 180.0))}   # приклад: крок 100 під бортові плити
 
-# ---- payload ----
-YAGI = dict(x=30.0, y=-130.0, top=Z_XBAR - R_T - 4, elems=((175, 10), (167, 70), (155, 135), (150, 200), (145, 260)), boom=266.0, m=0.40)
-HORN = dict(x=-185.0, y=0.0, top=Z_RAIL + R_T + 3, L=283.0, ap=226.0, thr=70.0, m=0.60)
-ZR10 = dict(x=200.0, y=0.0, w=128.0, h=152.0, top=Z_RAIL - R_T - 7, m=0.53)
-REP = dict(x=20.0, y=110.0, lx=150.0, ly=110.0, h=60.0, top=Z_XBAR - R_T - 3, m=0.50)
-BATT = dict(x0=-93.5, x1=93.5, y0=-87.0, y1=87.0, z0=-174.0, z1=-107.0)   # до зсуву
+BATT = dict(x0=-93.5, x1=93.5, y0=-87.0, y1=87.0, z0=-174.0, z1=-107.0)   # касета, номінальне положення
+BATT_TRIM = 15.0                         # хід касети по x у пазах нижньої пластини, ±мм
+BATT_KG = 5.0
 PLATE_BOT = dict(x0=-125, x1=125, y0=-125, y1=125, z0=-106, z1=-104)
-# плити на рейках
-P_HORN = dict(x0=-245.0, x1=-140.0, y0=-95.0, y1=95.0, z0=Z_RAIL + R_T, z1=Z_RAIL + R_T + 3, t=3.0, mat="CF")
-P_ZR10 = dict(x0=140.0, x1=270.0, y0=-95.0, y1=95.0, z0=Z_RAIL - R_T - 2, z1=Z_RAIL - R_T, t=2.0, mat="CF")
-T_REP = dict(x0=-70.0, x1=95.0, y0=40.0, y1=180.0, z0=REP["top"] - 2, z1=REP["top"], t=2.0, mat="G10")
+GROUND = LEG_BOT[2] - R_T                # низ лиж
+MIN_GROUND = 30.0                        # мінімальний просвіт під навісним
+Z_TOP_ZONE = Z_RAIL - R_T - 2            # верх нижніх зон: площина кріплення під рейками
+Z_BOT_ZONE = GROUND + MIN_GROUND
 
-def yagi_elems():
-    return [(YAGI["top"] - dz, L) for L, dz in YAGI["elems"]]
+# ---- зони встановлення: (x0, x1, y0, y1, z0, z1) ----
+ZONES = {
+    "A": dict(name="Носова", box=(167, 290, -272, 272, Z_BOT_ZONE, Z_TOP_ZONE), col="#b8560b",
+              mount="рейки + поперечки", note="огляд вперед і вниз вільний; частково під дисками гвинтів"),
+    "B": dict(name="Центральна", box=(-104, 104, -272, 272, Z_BOT_ZONE, Z_TOP_ZONE), col="#0b6fb8",
+              mount="рейки + поперечки", note="найбільша; важке ставити ближче до центру"),
+    "C": dict(name="Кормова", box=(-290, -167, -272, 272, Z_BOT_ZONE, Z_TOP_ZONE), col="#6b3fa0",
+              mount="рейки + поперечки", note="огляд назад і вниз вільний; частково під дисками"),
+    "D": dict(name="Коридори ніжок", box=(104, 167, -75, 75, Z_BOT_ZONE, Z_TOP_ZONE), col="#2e7d4f",
+              mount="лише рейки", note="між ніжками; дзеркально x −167…−104; для довгих виробів"),
+    "T": dict(name="Верхня", box=(-195, 195, -195, 195, -50, -6), col="#0e8a4f",
+              mount="4×M4 на верхній пластині", note="коло R195 у тіні гвинтів; прямокутне — з поворотом 45°"),
+    "V": dict(name="Відсік авіоніки", box=(-56, 56, -56, 56, -100, -60), col="#8c8c8c",
+              mount="демпфери", note="між пластинами; зайнятий Pixhawk 6X + CM4"),
+}
+D_MIRROR = (-167, -104)
+PROP_SHADOW_R = 575.0 - 28 * 25.4 / 2    # 219: зона під центром поза дисками гвинтів
+GPS_MAST = (-230.0, 0.0)
 
-def horn_rect(z):
-    top, L = HORN["top"], HORN["L"]
-    k = min(max((top - z) / L, 0.0), 1.0)
-    h = (HORN["thr"] + (HORN["ap"] - HORN["thr"]) * k) / 2
-    return (HORN["x"] - h, HORN["x"] + h, HORN["y"] - h, HORN["y"] + h)
+def zone_boxes():
+    """Усі прямокутні зони разом із дзеркальним коридором D."""
+    out = []
+    for k, z in ZONES.items():
+        out.append((k, z["box"]))
+        if k == "D":
+            x0, x1, y0, y1, z0, z1 = z["box"]; out.append(("D", (D_MIRROR[0], D_MIRROR[1], y0, y1, z0, z1)))
+    return out
 
-# ---- примітиви відстаней (вибірка точок, крок 2 мм) ----
 def seg_pts(a, b, step=2.0):
     n = max(2, int(math.dist(a, b) / step) + 1)
     return [tuple(a[i] + (b[i] - a[i]) * k / (n - 1) for i in range(3)) for k in range(n)]
@@ -67,7 +82,7 @@ def d_horn(p):
     dxy = math.hypot(max(R[0] - p[0], 0, p[0] - R[1]), max(R[2] - p[1], 0, p[1] - R[3]))
     return math.hypot(dxy, p[2] - zc)
 
-def batt_box(shift_x):
+def batt_box(shift_x=0.0):
     b = dict(BATT); b["x0"] += shift_x; b["x1"] += shift_x; return b
 
 def segments():
@@ -84,65 +99,20 @@ def segments():
         S.append((f"поперечка {n}", (x, y0, Z_XBAR), (x, y1, Z_XBAR), R_T, "G10"))
     return S
 
-def payload_mass_moment(shift_x=0.0):
-    items = [(ZR10["m"], ZR10["x"], ZR10["y"]), (REP["m"], REP["x"], REP["y"]),
-             (HORN["m"], HORN["x"], HORN["y"]), (YAGI["m"], YAGI["x"], YAGI["y"])]
-    return sum(m * x for m, x, _ in items), sum(m * y for m, _, y in items)
-
-def battery_trim(auw=13.48, batt_m=5.0):
-    mx, my = payload_mass_moment()
-    return -mx / batt_m, mx / auw, my / auw
-
-def rf_report(shift_x):
-    """Мінімальні відстані від елементів Ягі до провідних тіл."""
-    pts = []
-    for z, L in yagi_elems():
-        pts += seg_pts((YAGI["x"], YAGI["y"] - L / 2, z), (YAGI["x"], YAGI["y"] + L / 2, z))
-    cond = {"рупор": d_horn, "батарея": lambda p: d_box(p, batt_box(shift_x)),
-            "ZR10": lambda p: d_box(p, zr10_box()), "ретранслятор": lambda p: d_box(p, rep_box()),
-            "нижня пластина CF": lambda p: d_box(p, PLATE_BOT)}
-    for n, a, b, r, mat in segments():
-        if mat == "CF":
-            key = "ніжки CF" if n.startswith("ніжка") else "лижі CF"
-            prev = cond.get(key)
-            cond[key] = (lambda f, a=a, b=b, r=r: (lambda p: min(f(p), d_seg(p, a, b) - r)))(prev or (lambda p: 1e9))
-    out = {}
-    for k, f in cond.items():
-        out[k] = min(f(p) for p in pts) - 3.0          # 3 мм — радіус елемента
-    return out
-
-def zr10_box():
-    return dict(x0=ZR10["x"] - ZR10["w"] / 2, x1=ZR10["x"] + ZR10["w"] / 2, y0=ZR10["y"] - ZR10["w"] / 2, y1=ZR10["y"] + ZR10["w"] / 2,
-                z0=ZR10["top"] - ZR10["h"], z1=ZR10["top"])
-
-def rep_box():
-    return dict(x0=REP["x"] - REP["lx"] / 2, x1=REP["x"] + REP["lx"] / 2, y0=REP["y"] - REP["ly"] / 2, y1=REP["y"] + REP["ly"] / 2,
-                z0=REP["top"] - REP["h"], z1=REP["top"])
-
-def mech_report(shift_x, ground=None):
-    """Механічні зазори між тілами (мм) і просвіт над землею."""
-    ground = LEG_BOT[2] - R_T if ground is None else ground
-    bodies = {"рупор": ("horn", None), "ZR10": ("box", zr10_box()), "ретранслятор": ("box", rep_box()),
-              "батарея": ("box", batt_box(shift_x)), "плита рупора": ("box", P_HORN), "плита ZR10": ("box", P_ZR10)}
-    yagi_pts = []
-    for z, L in yagi_elems():
-        yagi_pts += seg_pts((YAGI["x"], YAGI["y"] - L / 2, z), (YAGI["x"], YAGI["y"] + L / 2, z))
-    yagi_pts += seg_pts((YAGI["x"], YAGI["y"], YAGI["top"]), (YAGI["x"], YAGI["y"], YAGI["top"] - YAGI["boom"]))
-    res = []
-    for n, a, b, r, mat in segments():
-        pts = seg_pts(a, b, 4.0)
-        for bn, (kind, B) in bodies.items():
-            if (n.startswith("рейка") and bn in ("плита рупора", "плита ZR10")) or (n.startswith("поперечка") and bn == "ретранслятор"):
-                continue                                  # це кріплення, а не зіткнення
-            d = min((d_horn(p) if kind == "horn" else d_box(p, B)) for p in pts) - r
-            res.append((n, bn, d))
-        d = min(min(d_seg(p, a, b) for p in yagi_pts[::3]) - r - 3, 999)
-        if not (n == "поперечка X1"):
-            res.append((n, "Ягі", d))
-    clear = {"рупор": HORN["top"] - HORN["L"] - ground, "ZR10": zr10_box()["z0"] - ground,
-             "Ягі": YAGI["top"] - YAGI["boom"] - ground, "ретранслятор": rep_box()["z0"] - ground}
-    return res, clear
-
+def zone_clearance():
+    """Мінімальні відстані від зон нижнього ярусу до конструкції і до землі."""
+    res = {}
+    segs = [sg for sg in segments() if not sg[0].startswith(("рейка", "поперечка"))]
+    for k, (x0, x1, y0, y1, z0, z1) in zone_boxes():
+        if k in ("T", "V"): continue
+        B = dict(x0=x0, x1=x1, y0=y0, y1=y1, z0=z0, z1=z1)
+        d = min(min(d_box(p, B) for p in seg_pts(a, b, 3.0)) - r for _, a, b, r, _ in segs)
+        for sh in (-BATT_TRIM, BATT_TRIM):
+            bb = batt_box(sh)
+            if not (bb["x1"] < x0 or bb["x0"] > x1): d = min(d, bb["z0"] - z1)
+        res[k] = min(res.get(k, 1e9), d)
+        res["земля"] = z0 - GROUND
+    return res
 
 # ================= плити клітки: контур, отвори, вирізи =================
 from shapely.geometry import Point, box as sbox
@@ -156,36 +126,32 @@ def _rr(x0, x1, y0, y1, r):
 def _slot_x(cx, cy, L, W):     # паз уздовж x
     return sbox(cx - (L - W) / 2, cy, cx + (L - W) / 2, cy).buffer(W / 2, 32)
 
+GRID = 20.0            # сітка M3 на універсальних плитах
+
+def _grid(x0, x1, y0, y1, avoid, margin=10.0, web=6.0):
+    H = []
+    nx = int((x1 - x0 - 2 * margin) // GRID); ny = int((y1 - y0 - 2 * margin) // GRID)
+    ox = (x0 + x1) / 2 - nx * GRID / 2; oy = (y0 + y1) / 2 - ny * GRID / 2
+    for i in range(nx + 1):
+        for j in range(ny + 1):
+            x, y = ox + i * GRID, oy + j * GRID
+            if all(math.hypot(x - ax, y - ay) - (M3 + ad) / 2 >= web for ax, ay, ad in avoid):
+                H.append((x, y, M3, "сітка M3 крок 20"))
+    return H
+
 def cage_plates():
-    """name -> dict(P=габарит, t, mat, outline=(x0,x1,y0,y1,r), holes=[(x,y,d,група)], cut=[(тип, параметри, група)])"""
+    """Універсальні монтажні плити. Координати плити: x — вперед, y — праворуч, центр плити (0, 0)."""
     out = {}
-    # плита рупора — лежить на рейках, горловина проходить між ними
-    P = P_HORN; H = []
-    for x in (P["x0"] + 15, P["x1"] - 15):
-        for sy in (-1, 1):
-            for dy in (-SADDLE_PITCH / 2, SADDLE_PITCH / 2):
-                H.append((x, sy * RAIL_Y + dy, M3, "сідла на рейки"))
-    cut = [("rrect", (HORN["x"] - 25, HORN["x"] + 25, -45.0, 45.0, 6.0), "горловина / адаптер")]
-    out["horn"] = dict(P=P, t=3.0, mat="CF", outline=(P["x0"], P["x1"], P["y0"], P["y1"], 6.0), holes=H, cut=cut,
-                       title="Плита рупора", note="CF 3 мм · лежить на рейках · отвори фланця рупора — по місцю")
-    # плита ZR10 — під рейками
-    P = P_ZR10; H = []
-    for x in (P["x0"] + 15, P["x1"] - 15):
-        for sy in (-1, 1):
-            for dy in (-SADDLE_PITCH / 2, SADDLE_PITCH / 2):
-                H.append((x, sy * RAIL_Y + dy, M3, "сідла на рейки"))
-    cut = [("circle", (ZR10["x"], ZR10["y"], 15.0), "кабель ZR10")]
-    out["zr10"] = dict(P=P, t=2.0, mat="CF", outline=(P["x0"], P["x1"], P["y0"], P["y1"], 6.0), holes=H, cut=cut,
-                       title="Плита ZR10", note="CF 2 мм · під рейками · кріплення SIYI — за шаблоном з комплекту")
-    # лоток ретранслятора — під поперечками X1/X2
-    P = T_REP; H = []
-    for name, (x, _) in XBARS.items():
-        for dx in (-SADDLE_PITCH / 2, SADDLE_PITCH / 2):
-            for y in (64.0, 156.0):
-                H.append((x + dx, y, M3, f"сідла на {name}"))
-    cut = [("slot", (xc, yc, 27.0, 5.0), "ремені 25 мм") for xc in (-5.0, 65.0) for yc in (50.0, 170.0)]
-    out["tray"] = dict(P=P, t=2.0, mat="G10", outline=(P["x0"], P["x1"], P["y0"], P["y1"], 6.0), holes=H, cut=cut,
-                       title="Лоток ретранслятора", note="G10 2 мм · під X1/X2 · короб на двох ременях 25 мм")
+    L, Wd = 130.0, 190.0
+    sad = [(x, sy * RAIL_Y + dy, M3) for x in (-L / 2 + 15, L / 2 - 15) for sy in (-1, 1) for dy in (-SADDLE_PITCH / 2, SADDLE_PITCH / 2)]
+    H = [(x, y, d, "сідла на рейки") for x, y, d in sad] + _grid(-L / 2, L / 2, -Wd / 2, Wd / 2, sad)
+    out["center"] = dict(size=(L, Wd), t=2.0, mat="CF", outline=(-L / 2, L / 2, -Wd / 2, Wd / 2, 6.0), holes=H, cut=[],
+                         title="Плита між рейками", note="CF 2 мм · 4 сідла на рейки Ø16 · будь-яке x уздовж рейок")
+    L, Wd = 150.0, 150.0
+    sad = [(sx * 50 + dx, y, M3) for sx in (-1, 1) for dx in (-SADDLE_PITCH / 2, SADDLE_PITCH / 2) for y in (-50.0, 50.0)]
+    H = [(x, y, d, "сідла на поперечки") for x, y, d in sad] + _grid(-L / 2, L / 2, -Wd / 2, Wd / 2, sad)
+    out["side"] = dict(size=(L, Wd), t=2.0, mat="G10", outline=(-L / 2, L / 2, -Wd / 2, Wd / 2, 6.0), holes=H, cut=[],
+                       title="Плита бортова", note="G10 2 мм · 4 сідла на дві поперечки з кроком 100")
     return out
 
 def cut_poly(kind, prm):
@@ -236,13 +202,38 @@ JOINTS = [  # (поз, назва, к-сть, маса г, матеріал, о�
     ("J2", "Хрест ніжка–рейка", 4, 10, "PA-CF", "осі зі зсувом 18 мм; ніжка під кутом до рейки"),
     ("J3", "Т-вузол ніжка–лижа", 4, 10, "PA-CF", "охоплює лижу; гніздо ніжки"),
     ("J4", "Хрест поперечка–рейка", 4, 6, "PETG", "90°, зсув осей 16 мм, поперечка під рейкою"),
-    ("J5", "Сідло Ø16", 12, 3, "PETG", "2×M3 крок 28: 4 рупор, 4 ZR10, 4 лоток"),
-    ("J6", "Затискач бума Ягі", 1, 12, "PETG", "на X1; без вуглецевого наповнювача"),
+    ("J5", "Сідло Ø16", 8, 3, "PETG", "2×M3 крок 28; по 4 на кожну монтажну плиту"),
     ("J7", "Заглушка лижі", 4, 2, "PETG", "")]
 FASTENERS_G = 40
 
 def cage_mass():
+    """Клітка без навісного: труби, вузли J1–J4, J7, кріпіж. Монтажні плити і сідла — окремо (kit)."""
     t = sum(tube_kg_per_m(m) * L / 1000 * n for _, _, m, L, n in tubes()) * 1000
-    j = sum(n * g for _, _, n, g, _, _ in JOINTS)
-    p = sum(check_plate(pl)[1] for pl in cage_plates().values())
-    return dict(tubes=t, joints=j, plates=p, fasteners=FASTENERS_G, total=t + j + p + FASTENERS_G)
+    j = sum(n * g for p_, _, n, g, _, _ in JOINTS if p_ != "J5")
+    kit = sum(check_plate(pl)[1] for pl in cage_plates().values()) + sum(n * g for p_, _, n, g, _, _ in JOINTS if p_ == "J5")
+    return dict(tubes=t, joints=j, fasteners=FASTENERS_G, total=t + j + FASTENERS_G, kit=kit)
+
+# ================= бюджет навісного =================
+# Апарат без навісного: планер (мотори, ESC, гвинти 28", промені Ø50, пластини 250×250), авіоніка
+# (Pixhawk 6X + CM4, GPS, PM, демпфери), силова проводка, клітка. Виведено з повного AUW 13.84 кг
+# вилученням батареї (5.0), виробів (3.351), їхніх плит і сідел (0.277) і старої клітки (0.848).
+BASE_EXCL_CAGE = 13.84 - 5.0 - 3.351 - 0.277 - 0.848
+def base_kg():
+    return BASE_EXCL_CAGE + cage_mass()["total"] / 1000
+
+MAX_T_MOTOR = 8.5       # кг, MN6012 KV170 + 28" складаний, 12S, рівень моря
+def perf(auw, pay_w=0.0, D=28, n=4, fm=0.51, avi=35.0, E=1732.0, alt=1500):
+    rho = 1.225 * (1 - 2.25577e-5 * alt) ** 4.25588
+    T = auw / n * 9.81; A = math.pi * (D * 0.0254 / 2) ** 2
+    P = (T ** 1.5 / math.sqrt(2 * rho * A)) / fm * n + avi + pay_w
+    return P, E * 0.88 / P * 60 - 3, (MAX_T_MOTOR * n * rho / 1.225) / auw
+
+def payload_max(tw_min=2.0):
+    rho = 1.225 * (1 - 2.25577e-5 * 1500) ** 4.25588
+    return MAX_T_MOTOR * 4 * rho / 1.225 / tw_min - base_kg() - BATT_KG
+
+CG_TARGET_MM = 10.0     # цільове зміщення ЦМ апарата
+def cg_limits(auw):
+    """Допустимі сумарні моменти навісного (кг·мм) відносно центру апарата."""
+    trim = BATT_KG * BATT_TRIM
+    return dict(x=CG_TARGET_MM * auw + trim, y=CG_TARGET_MM * auw, trim=trim)
