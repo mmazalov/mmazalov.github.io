@@ -8,6 +8,8 @@ from reportlab.lib.units import mm
 from reportlab.lib.colors import HexColor
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+sys.path.insert(0, os.path.dirname(__file__))
+import plate_geometry as G
 
 pdfmetrics.registerFont(TTFont("DV", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"))
 pdfmetrics.registerFont(TTFont("DVB", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"))
@@ -24,7 +26,7 @@ R = BASE / 2                       # радіус мотора
 D45 = R / math.sqrt(2)             # 406.6
 PROP_R = 28 * 25.4 / 2             # 355.6
 ARM_D = 50.0
-PLATE = 250.0                      # центральна пластина 250x250 (під затискачі Ø50)
+PLATE = G.PLATE                    # центральна пластина — з plate_geometry.py
 MOTOR_D = 69.0
 SL_W, SL_H = 298.5, 259.0
 GPS_FWD = -230.0
@@ -345,46 +347,6 @@ def sheet3():
 # ================================================================
 # АРКУШ 4 — план payload М 1:4 + центральна пластина М 1:2
 # ================================================================
-def plate_holes():
-    H = []
-    for a in (45, 135, 225, 315):
-        ua = math.radians(a); ux, uy = math.cos(ua), math.sin(ua); nx, ny = -uy, ux
-        for along in (90, 130):
-            for ac in (-32, 32):
-                H.append((ux * along + nx * ac, uy * along + ny * ac, 4.2, "TB", "затискачі променів"))
-    for x, y in ((110, 0), (-110, 0), (0, 110), (0, -110)):
-        H.append((x, y, 3.2, "TB", "стійки 50 мм"))
-    for x in (-90, 90):
-        for y in (-20, 20): H.append((x, y, 4.2, "T", "кронштейн Starlink"))
-    for x in (-25, 25): H.append((x, -112, 4.2, "T", "кронштейн щогли GPS"))
-    for x in (-55, 55):
-        for y in (-40, 40): H.append((x, y, 3.2, "B", "демпфери Pixhawk"))
-    for x in (-95, 95):
-        for y in (-26, 4): H.append((x, y, 4.2, "B", "касета батареї"))
-    for sy in (-1, 1):
-        for x in (-50, -30, 30, 50): H.append((x, sy * 115, 4.2, "B", "ніжки клітки"))
-    return H
-
-def check_plate(H):
-    problems = []
-    for layer in ("T", "B"):
-        hs = [h for h in H if h[3] in (layer, "TB")]
-        for i in range(len(hs)):
-            x, y, d, _, g = hs[i]
-            if max(abs(x), abs(y)) + d / 2 > PLATE / 2 - 4:
-                problems.append(f"{layer}: {g} ({x:.0f},{y:.0f}) близько до краю")
-            if g != "затискачі променів":
-                for a in (45, 135, 225, 315):
-                    ar = math.radians(a)
-                    al = x * math.cos(ar) + y * math.sin(ar); ac = -x * math.sin(ar) + y * math.cos(ar)
-                    if 80 <= al <= 145 and abs(ac) <= 38:
-                        problems.append(f"{layer}: {g} ({x:.0f},{y:.0f}) під затискачем")
-            for j in range(i + 1, len(hs)):
-                x2, y2, d2, _, _ = hs[j]
-                gap = math.hypot(x - x2, y - y2) - (d + d2) / 2
-                if gap < 6: problems.append(f"{layer}: ({x:.0f},{y:.0f})–({x2:.0f},{y2:.0f}) перемичка {gap:.1f}")
-    return problems
-
 def sheet4():
     sheet(4, TOTAL, "План payload · центральна пластина", "1:4 / 1:2")
     s = 0.25; ox, oy = 105, 160
@@ -418,18 +380,20 @@ def sheet4():
     s2 = 0.5; px, py = 318, 172
     tx(215, 274, "ЦЕНТРАЛЬНА ПЛАСТИНА", 12, True)
     tx(215, 268, "CF 2 мм · 2 шт · вид зверху · для DXF брати розміри, не масштаб", 7, False, MUT)
-    hp = PLATE / 2; ch = 18
-    pts = [(-hp + ch, -hp), (hp - ch, -hp), (hp, -hp + ch), (hp, hp - ch), (hp - ch, hp), (-hp + ch, hp), (-hp, hp - ch), (-hp, -hp + ch)]
-    poly([(px + x * s2, py + y * s2) for x, y in pts], 0.5, INK, "#f2f2f2", 1)
+    hp = PLATE / 2
+    poly([(px + x * s2, py + y * s2) for x, y in list(G.outline_poly().exterior.coords)[:-1]], 0.5, INK, "#f2f2f2", 1)
     for a in (45, 135, 225, 315):
         ua = math.radians(a); ux, uy = math.cos(ua), math.sin(ua); nx, ny = -uy, ux
         cps = [(ux * al + nx * ac, uy * al + ny * ac) for al, ac in ((80, -38), (145, -38), (145, 38), (80, 38))]
         poly([(px + x * s2, py + y * s2) for x, y in cps], 0.25, MUT, MUT, 0.08, dash=(1.5, 1))
         ln(px + ux * 50 * s2, py + uy * 50 * s2, px + ux * 185 * s2, py + uy * 185 * s2, 0.15, MUT, dash=(4, 1.5, 1, 1.5))
-    rect(px - 55 * s2, py - 30 * s2, 110 * s2, 60 * s2, 0.25, ACC, dash=(1.5, 1))
-    tx(px, py - 1, "Pixhawk 6X + CM4", 5.5, False, ACC, "c")
-    for sy in (-1, 1): rect(px - 20 * s2, py + (sy * 70 - 6) * s2, 40 * s2, 12 * s2, 0.3, INK, "#ffffff", 1, r=2.8)
-    H = plate_holes()
+    for sl in G.SLOTS:
+        poly([(px + x * s2, py + y * s2) for x, y in list(G.slot_poly(*sl).exterior.coords)[:-1]], 0.3, INK, "#ffffff", 1)
+    for layer, col, dy in (("T", SLC, 5), ("B", ACC, -1)):
+        w, h, r = G.POCKET[layer]
+        poly([(px + x * s2, py + y * s2) for x, y in list(G.rrect_poly(w, h, r).exterior.coords)[:-1]], 0.3, col, dash=(1.5, 1))
+        tx(px, py + dy, f"виріз {'верх' if layer == 'T' else 'низ'} {w:.0f}×{h:.0f}", 5.5, False, col, "c")
+    H = G.holes()
     lc = {"TB": INK, "T": SLC, "B": ACC}
     for x, y, d, layer, g in H:
         circ(px + x * s2, py + y * s2, d / 2 * s2 + 0.15, 0.28, lc[layer], "#ffffff", 1)
@@ -446,15 +410,16 @@ def sheet4():
         circ(cx + 1.5, cy + 1, 1.3, 0.3, lc[layer], "#ffffff", 1)
         tx(cx + 4.5, cy, f"{n}× Ø{d} · {g} [{lname[layer]}]", 6.4)
     Y = 69
+    mT, mB = G.mass_g(G.check("T")[1]), G.mass_g(G.check("B")[1])
     for t in ("Затискач Ø50: 4×M4, крок 40 уздовж × 64 впоперек. Пази 40×12 — під джгути.",
-              "Пластина виросла з 210×200 до 250×250: на меншій затискачі Ø50 виходять за край (≈ +80 г).",
-              "Отвори під плату Pixhawk — за кресленням Holybro, звірити до різки."):
-        tx(215, Y, t, 6.4, False, DIM if "виросла" in t else INK); Y -= 4.4
+              f"Пластина 250×250 (на 210×200 затискачі Ø50 не поміщаються): верх {mT:.0f} г, низ {mB:.0f} г.",
+              "DXF для різки: fpv/cnc/plate_top.dxf, plate_bottom.dxf. Півкруглий виріз на кромці — ніс."):
+        tx(215, Y, t, 6.4, False, DIM if "Пластина" in t else INK); Y -= 4.4
     c.showPage()
     return H
 
 sheet1(); sheet2(); sheet3(); H = sheet4()
 c.save()
-probs = check_plate(H)
+probs = G.check("T")[0] + G.check("B")[0]
 print("Перевірка пластини:", "OK" if not probs else "\n  " + "\n  ".join(probs))
 print("PDF:", os.path.abspath(OUT))
